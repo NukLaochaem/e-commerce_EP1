@@ -3,7 +3,12 @@ module.exports = (sequelize, Sequelize) => {
     name: Sequelize.DataTypes.STRING,
     description: Sequelize.DataTypes.TEXT,
     price: Sequelize.DataTypes.FLOAT,
-    deletedAt: Sequelize.DataTypes.DATE, // For soft deletes
+    brand: Sequelize.DataTypes.STRING,
+    category: Sequelize.DataTypes.STRING,
+    date_added: Sequelize.DataTypes.DATE,
+    imgurl: Sequelize.DataTypes.STRING,
+    quantity: Sequelize.DataTypes.INTEGER,
+    deletedAt: Sequelize.DataTypes.DATE,
   });
   Product.associate = function (models) {
     Product.belongsTo(models.Brand);

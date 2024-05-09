@@ -1,14 +1,14 @@
 module.exports = {
   checkIfAuthorized: function (req, res, next) {
-    if (req.user.role === "admin" || req.user.role === "member") {
-      next();
-    } else {
-      res.status(403).send(new Error("Access denied."));
+    if (req.user == null) {
+      res.status(401).send(new Error());
+      return;
     }
+    if (req.user.role == "User") next();
   },
 
   isAdmin: function (req, res, next) {
-    if (req.user.role === "admin") {
+    if (req.user.role === "Admin") {
       next();
       return;
     } else {

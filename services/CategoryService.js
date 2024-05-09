@@ -1,6 +1,6 @@
 class CategoriesService {
   constructor(db) {
-    this.client = db.sequelize;
+    this.db = db.sequelize;
     this.Category = db.Category;
   }
 

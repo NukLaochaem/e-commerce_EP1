@@ -1,18 +1,18 @@
 var express = require("express");
 var router = express.Router();
 
-var BrandsService = require("../services/BrandsService");
+var BrandService = require("../services/BrandService");
 var db = require("../models");
-var BrandsService = new BrandsService(db);
+var brandService = new BrandService(db);
 
-const { isAdmin } = require("../middleware/authMiddleware");
+//const { isAdmin } = require("../middleware/authMiddleware");
 
 /* GET Brands page. */
 
 //getting all brand
 router.get("/", async function (req, res, next) {
   try {
-    const brands = await BrandsService.findAll();
+    const brands = await brandService.findAll();
     res.json(brands);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch brand" });
@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
     const { name, description } = req.body;
 
     // Create a new product
-    const brands = await BrandsService.create({ name, description });
+    const brands = await brandService.create({ name, description });
     res.status(201).json(brands);
   } catch (error) {
     res.status(500).json({ error: "Failed to add brand" });
@@ -39,7 +39,7 @@ router.put("/:id", async (req, res) => {
     const { name, description, price } = req.body;
     // Find the product by ID and update its attributes
 
-    const [updated] = await BrandsService.update(
+    const [updated] = await brandService.update(
       { name, description, price },
       { where: { id } }
     );
@@ -58,7 +58,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     // Soft delete the product by updating its status
-    const [deleted] = await BrandsService.deletebrands(
+    const [deleted] = await brandService.deletebrands(
       { deletedAt: new Date() },
       { where: { id } }
     );
@@ -71,3 +71,4 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to delete brand" });
   }
 });
+module.exports = router;

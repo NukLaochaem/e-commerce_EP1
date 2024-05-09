@@ -27,7 +27,7 @@ fs.readdirSync(__dirname)
   .forEach((file) => {
     const model = require(path.join(__dirname, file))(sequelize, Sequelize);
     db[model.name] = model;
-    console.log(db);
+    //console.log(db);
   });
 
 Object.keys(db).forEach((modelName) => {
@@ -35,6 +35,5 @@ Object.keys(db).forEach((modelName) => {
     db[modelName].associate(db);
   }
 });
-console.log(db);
 
 module.exports = db;

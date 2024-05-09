@@ -1,17 +1,28 @@
 module.exports = (sequelize, Sequelize) => {
-  const User = sequelize.define(
-    "User",
-    {
-      FullName: Sequelize.DataTypes.STRING,
-      FirstName: Sequelize.DataTypes.STRING,
-      LastName: Sequelize.DataTypes.STRING,
-      UserName: Sequelize.DataTypes.STRING,
-      Password: Sequelize.DataTypes.STRING,
-      Role: { type: Sequelize.DataTypes.STRING, defaultValue: "member" },
+  const User = sequelize.define("User", {
+    firstName: Sequelize.DataTypes.STRING,
+    lastName: Sequelize.DataTypes.STRING,
+    userName: Sequelize.DataTypes.STRING,
+    email: Sequelize.DataTypes.STRING,
+    password: Sequelize.DataTypes.STRING,
+    salt: Sequelize.DataTypes.STRING,
+    address: Sequelize.DataTypes.STRING,
+    telephoneNumber: Sequelize.DataTypes.STRING,
+    role: {
+      type: Sequelize.DataTypes.STRING,
+      defaultValue: "user",
     },
-    {
-      timestamps: true,
-    }
-  );
+    membershipStatus: {
+      type: Sequelize.DataTypes.STRING,
+      defaultValue: "Bronze",
+    },
+  });
+  User.associate = (models) => {
+    User.belongsTo(models.Membership);
+    User.belongsTo(models.Role);
+    User.belongsTo(models.Cart);
+    User.belongsTo(models.Order);
+  };
+
   return User;
 };

@@ -4,8 +4,9 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
-var passport = require("passport"); // ??
+var passport = require("passport");
+var session = require("express-session");
+var SQLiteStore = require("connect-sqlite3")(session);
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -16,6 +17,7 @@ var brandsRouter = require("./routes/brands");
 var cartRouter = require("./routes/cart");
 var ordersRouter = require("./routes/orders");
 var adminRouter = require("./routes/admin");
+var authRouter = require("./routes/auth");
 
 var db = require("./models");
 db.sequelize.sync({ force: false });
@@ -32,6 +34,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(
+  session({
+    secret: "random text",
+    resave: false,
+    saveUninitialized: false,
+    store: new SQLiteStore(),
+  })
+);
+app.use(passport.authenticate("session"));
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
@@ -41,6 +53,7 @@ app.use("/brands", brandsRouter);
 app.use("/cart", cartRouter);
 app.use("/orders", ordersRouter);
 app.use("/admin", adminRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

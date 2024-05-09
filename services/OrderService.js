@@ -1,7 +1,7 @@
 class OrderService {
   constructor(db) {
-    this.client = db.sequelize;
-    this.Order = db.order;
+    this.db = db.sequelize;
+    this.Order = db.Order;
   }
 
   async getAll(userId, isAdmin) {

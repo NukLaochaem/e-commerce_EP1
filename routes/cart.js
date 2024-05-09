@@ -3,17 +3,17 @@ var router = express.Router();
 
 var CartService = require("../services/CartService");
 var db = require("../models");
-var CartService = new CartService(db);
+var cartService = new CartService(db);
 
-const { isAuthenticated } = require("../middleware/authMiddleware");
+//const { isAuthenticated } = require("../middleware/authMiddleware");
 
 /* GET cart page. */
 
 //getting all the product items that has been added to the cart for the current logged in users active cart (Cart that has not been checked out)
-router.post("/", isAuthenticated, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { userId, productId, quantity, unitPrice } = req.body;
-    const cartItem = await CartService.addToCart({
+    const cartItem = await cartService.addToCart({
       userId,
       productId,
       quantity,
@@ -25,16 +25,16 @@ router.post("/", isAuthenticated, async (req, res) => {
   }
 });
 
-router.post("/checkout/now", isAuthenticated, async (req, res) => {
-  const cartItem = await CartService.checkoutCart({
+router.post("/checkout/now", async (req, res) => {
+  const cartItem = await cartService.checkoutCart({
     userId,
   });
 });
 
-router.get("/", isAuthenticated, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const userId = req.user.id; // Assuming the user ID is available in the request
-    const cartItems = await CartService.findAll({ where: { userId } });
+    const cartItems = await cartService.findAll({ where: { userId } });
     res.json(cartItems);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch cart items" });
@@ -42,10 +42,10 @@ router.get("/", isAuthenticated, async (req, res) => {
 });
 
 // editing/changing a cart product item quantity
-router.put("/", isAuthenticated, async (req, res) => {
+router.put("/", async (req, res) => {
   try {
     const { userId, productId, newQuantity } = req.body;
-    await CartService.updateCartItem(
+    await cartService.updateCartItem(
       { quantity: newQuantity },
       { where: { userId, productId } }
     );
@@ -56,12 +56,13 @@ router.put("/", isAuthenticated, async (req, res) => {
 });
 
 // delete/remove a product item from the current logged in users active cart
-router.delete("/", isAuthenticated, async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
     const { userId, productId } = req.body;
-    await CartService.deleteCartItem({ where: { userId, productId } });
+    await cartService.deleteCartItem({ where: { userId, productId } });
     res.json({ message: "Cart item deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete cart item" });
   }
 });
+module.exports = router;
