@@ -60,7 +60,10 @@ router.post("/register", async (req, res, next) => {
       });
     }
 
-    const existingUser = await userService.findUserByEmail(email);
+    const existingUser = await userService.findUserByEmailOrUsername(
+      email,
+      username
+    );
 
     if (existingUser) {
       return res.json({

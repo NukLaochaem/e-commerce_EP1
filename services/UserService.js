@@ -7,8 +7,11 @@ class UserService {
     this.User = db.User;
   }
 
-  async findUserByEmail(email) {
-    return this.User.findOne({ where: { email } });
+  async findUserByEmailOrUsername(email, username) {
+    const userByEmail = await this.User.findOne({ where: { email } });
+    const userByUsername = await this.User.findOne({ where: { username } });
+
+    return userByEmail || userByUsername;
   }
 
   async createUser(

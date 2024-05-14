@@ -4,23 +4,37 @@ class CategoriesService {
     this.Category = db.Category;
   }
 
-  async create(name, description) {
-    return this.Category.create({
-      name,
-      description,
-    });
-  }
-
-  async getAll() {
+  async getAllCategories() {
     return this.Category.findAll();
   }
 
-  async update(categoryId, newData) {
-    return this.Category.update(newData, { where: { id: categoryId } });
+  async createCategory(name) {
+    return this.Category.create({ name });
   }
 
-  async delete(categoryId) {
-    return this.Category.destroy({ where: { id: categoryId } });
+  async getCategoryById(id) {
+    return this.Category.findByPk(id);
+  }
+
+  async updateCategory(id, newData) {
+    const category = await this.Category.findByPk(id);
+    return category.update(newData);
+  }
+
+  async deleteCategory(id) {
+    const category = await this.Category.findByPk(id);
+
+    if (category) {
+      const products = await category.getProducts();
+
+      if (products.length > 0) {
+        throw new Error(
+          "Category is assigned to products and cannot be deleted"
+        );
+      }
+      return category.destroy();
+    }
+    return null;
   }
 }
 

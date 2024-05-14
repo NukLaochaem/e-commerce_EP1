@@ -8,9 +8,11 @@ class MembershipService {
     this.Role = db.Role;
     this.Product = db.Product;
     this.User = db.User;
+    this.Category = db.Category;
+    this.Brand = db.Brand;
   }
 
-  async dataFromAPI() {
+  async insertData() {
     try {
       const existingProductsCount = await this.Product.count();
       if (existingProductsCount > 0) {
@@ -21,14 +23,51 @@ class MembershipService {
       const response = await axios.get(
         "http://backend.restapi.co.za/items/products"
       );
-      const products = response.data.data;
-      console.log(products);
+      const productsData = response.data.data;
 
-      await this.Product.bulkCreate(products);
+      const categories = new Set(
+        productsData.map((product) => product.category)
+      );
+      const brands = new Set(productsData.map((product) => product.brand));
 
-      return;
+      const createdCategories = await Promise.all(
+        [...categories].map((category) =>
+          this.Category.create({ name: category })
+        )
+      );
+      const createdBrands = await Promise.all(
+        [...brands].map((brand) => this.Brand.create({ name: brand }))
+      );
+
+      const products = await Promise.all(
+        productsData.map(async (product) => {
+          const category = createdCategories.find(
+            (category) => category.name === product.category
+          );
+          const categoryId = category ? category.id : null;
+
+          const brand = createdBrands.find(
+            (brand) => brand.name === product.brand
+          );
+          const brandId = brand ? brand.id : null;
+
+          return this.Product.create({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            CategoryId: categoryId,
+            BrandId: brandId,
+            date_added: product.date_added,
+            imgurl: product.imgurl,
+            quantity: product.quantity,
+          });
+        })
+      );
+      console.log("Data inserted successfully!");
+      return products;
     } catch (error) {
-      throw new Error("Failed to fetch initial data from API");
+      console.error("Error inserting data:", error);
+      throw error;
     }
   }
 
@@ -37,7 +76,7 @@ class MembershipService {
       const rolesCount = await this.Role.count();
       if (rolesCount === 0) {
         await this.Role.bulkCreate([{ name: "Admin" }, { name: "User" }]);
-        return "Roles have been created";
+        return;
       } else {
         return;
       }
@@ -72,6 +111,7 @@ class MembershipService {
       address: "Online",
       telephoneNumber: "911",
       role: adminRole.name,
+      RoleId: "1",
     });
 
     return;
@@ -98,7 +138,7 @@ class MembershipService {
 
   async initializeDatabase() {
     try {
-      await this.dataFromAPI();
+      await this.insertData();
 
       await this.populateRolesTable();
 

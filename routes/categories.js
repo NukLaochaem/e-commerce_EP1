@@ -12,21 +12,48 @@ var categoryService = new CategoryService(db);
 // GET all categories
 router.get("/", async (req, res) => {
   try {
-    const categories = await categoryService.getAll();
-    res.json(categories);
+    const categories = await categoryService.getAllCategories();
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Category found", categories },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch categories" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to fetch categories" },
+    });
   }
 });
 
-// POST a new category
+// POST add new category
 router.post("/", async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const category = await categoryService.create({ name, description });
-    res.status(201).json(category);
+    const { name } = req.body;
+
+    if (!name) {
+      return res.json({
+        status: "error",
+        statuscode: 400,
+        data: { result: "Category name required" },
+      });
+    }
+
+    const category = await categoryService.createCategory(name);
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "New category has been added", category },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to add category" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to add category" },
+    });
   }
 });
 
@@ -34,18 +61,38 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
-    const [updated] = await categoryService.update(
-      { name, description },
-      { where: { id } }
-    );
-    if (updated) {
-      res.json({ message: "Category updated successfully" });
-    } else {
-      res.status(404).json({ error: "Category not found" });
+    const { name } = req.body;
+
+    const existingCategory = await categoryService.getCategoryById(id);
+
+    if (!existingCategory) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Category not found" },
+      });
     }
+    if (!name) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Category name required" },
+      });
+    }
+
+    const updatedCategory = await categoryService.updateCategory(id, { name });
+
+    return res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Category has been updated", updatedCategory },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update category" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to update category" },
+    });
   }
 });
 
@@ -53,17 +100,35 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const [deleted] = await categoryService.delete(
-      { deletedAt: new Date() },
-      { where: { id } }
-    );
-    if (deleted) {
-      res.json({ message: "Category deleted successfully" });
-    } else {
-      res.status(404).json({ error: "Category not found" });
+
+    const existingCategory = await categoryService.getCategoryById(id);
+
+    if (!existingCategory) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Category not found" },
+      });
+    }
+
+    const deletedCategory = await categoryService.deleteCategory(id);
+
+    if (deletedCategory) {
+      res.json({
+        status: "success",
+        statuscode: 200,
+        data: {
+          result: "Category has been deleted succesfully",
+          deletedCategory,
+        },
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete category" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
   }
 });
 

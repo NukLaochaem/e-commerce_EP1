@@ -10,24 +10,61 @@ var productService = new ProductService(db);
 //getting all products
 router.get("/", async (req, res) => {
   try {
-    // Retrieve all products from the database
     const products = await productService.getAllProducts();
-    res.json(products);
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "products found", products },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch products" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to get products" },
+    });
   }
 });
 
 // adding new products
 router.post("/", async (req, res) => {
   try {
-    const { name, description, price } = req.body;
+    const { name, description, price, quantity, brand, category } = req.body;
 
-    // Create a new product
-    const product = await productService.create({ name, description, price });
-    res.status(201).json(product);
+    if (!name) {
+      return res.status(400).json({ error: "Name is required" });
+    } else if (!description) {
+      return res.status(400).json({ error: "Description is required" });
+    } else if (!price) {
+      return res.status(400).json({ error: "Price is required" });
+    } else if (!quantity) {
+      return res.status(400).json({ error: "Quantity is required" });
+    } else if (!brand) {
+      return res.status(400).json({ error: "Brand is required" });
+    } else if (!category) {
+      return res.status(400).json({ error: "Category is required" });
+    }
+
+    const product = await productService.addProduct(
+      name,
+      description,
+      price,
+      quantity,
+      brand,
+      category
+    );
+
+    res.json({
+      status: "sucess",
+      statuscode: 200,
+      data: { result: "Product has been added", "product:": product },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to add product" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to add product" },
+    });
   }
 });
 
@@ -35,19 +72,46 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price } = req.body;
-    // Find the product by ID and update its attributes
-    const [updated] = await productService.update(
-      { name, description, price },
-      { where: { id } }
-    );
-    if (updated) {
-      res.json({ message: "Product updated successfully" });
-    } else {
-      res.status(404).json({ error: "Product not found" });
+    const { name, description, price, quantity, brand, category } = req.body;
+
+    if (!name && !description && !price && !quantity && !brand && !category) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Field must be provided" },
+      });
     }
+
+    const existingProduct = await productService.getProductById(id);
+
+    if (!existingProduct) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Product not found" },
+      });
+    }
+
+    const updated = await productService.updateProduct(id, {
+      name,
+      description,
+      price,
+      quantity,
+      brand,
+      category,
+    });
+
+    return res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Product has been updated", product: updated },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update product" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to update product" },
+    });
   }
 });
 
@@ -55,78 +119,41 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // Soft delete the product by updating its status
-    const [deleted] = await productService.delete(
-      { deletedAt: new Date() },
-      { where: { id } }
-    );
-    if (deleted) {
-      res.json({ message: "Product deleted successfully" });
-    } else {
-      res.status(404).json({ error: "Product not found" });
+
+    const existingProduct = await productService.getProductById(id);
+    if (!existingProduct) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Product not found" },
+      });
     }
+
+    const deleted = await productService.deleteProduct(id);
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Product deleted successfully", "product:": deleted },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete product" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: "Failed to delete product" },
+    });
   }
 });
+
+// search and filter
+router.get("/search", async (req, res) => {
+  try {
+    const products = await productService.getAllProducts();
+
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
 module.exports = router;
-
-/*
-API Specification
-All endpoints specified in each section as required must be included in your project. If you require more endpoints they can be added.
-All endpoints must return JSON Objects with valid status codes. Error handling and validation must be implemented in each endpoint
-Validation and route protection/authentication/admin checks must be implemented with middleware for all required routes.
-NOTE: More properties can be added if required
-
-The base JSON response structure must be used for each endpoint
-
-Base JSON return structure:
-{
-  "status": "success",
-  "statuscode": 200,
-  "data":{
-    "result": "message of what has been done"
-  }
-}
-
-Success when create an account:
-{
-  "status": "success",
-  "statuscode": 200,
-  "data":{
-    "result": "you created an account"
-  }
-}
-
-Example of a user that logged in with extra information:
-{
-  "status": "success",
-  "statuscode": 200,
-  "data":{
-    "result": "you are logged in",
-    "id": 3,
-    "email": "test@hotmail.com",
-    "name": "test user",
-    "token": "Eyefwerfgojrgiwhfewofiwe"
-  }
-}
-
-Error:
-{
-  "status": "error",
-  "statuscode": 404,
-  "data":{
-    "result": "username already exist"
-  }
-}
-
-Product error JSON return example:
-{
-  "status": "error",
-  "statuscode": 404,
-  "data":{
-    "result": "no product found",
-    "products": []
-  }
-}
-*/

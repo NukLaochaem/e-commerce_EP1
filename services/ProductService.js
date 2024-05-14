@@ -4,27 +4,48 @@ class ProductsService {
     this.Product = db.Product;
   }
 
-  async addProduct(name, description, price) {
-    return this.Product.create({
-      name: name,
-      description: description,
-      price: price,
-    });
-  }
-
   async getAllProducts() {
-    const query = `SELECT * FROM products`;
+    const query = `
+    SELECT 
+        p.*, 
+        b.name AS brand,
+        c.name AS category
+    FROM 
+        products p
+        INNER JOIN categories c ON p.CategoryId = c.id
+        INNER JOIN brands b ON p.BrandId = b.id
+    `;
+
     return this.Product.sequelize.query(query, {
       type: this.Product.sequelize.QueryTypes.SELECT,
     });
+  }
+
+  async addProduct(name, description, price, quantity, brandId, categoryId) {
+    const product = await this.Product.create({
+      name,
+      description,
+      price,
+      quantity,
+      BrandId: brandId,
+      CategoryId: categoryId,
+    });
+
+    return product;
+  }
+
+  async getProductById(id) {
+    return this.Product.findByPk(id);
   }
 
   async updateProduct(id, data) {
     return this.Product.update(data, { where: { id } });
   }
 
-  async deleteproduct(id) {
-    return this.Product.destroy({ deletedAt: new Date() }, { where: { id } });
+  async deleteProduct(id) {
+    const product = await this.Product.findByPk(id);
+
+    return product.destroy();
   }
 }
 module.exports = ProductsService;
