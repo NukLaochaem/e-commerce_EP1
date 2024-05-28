@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const Role = sequelize.define("Role", {
-    name: {
-      type: Sequelize.DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
+    name: Sequelize.DataTypes.STRING,
   });
+
+  Role.associate = (models) => {
+    Role.hasMany(models.User, { foreignKey: "RoleId" });
+  };
 
   return Role;
 };

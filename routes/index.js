@@ -26,7 +26,7 @@ router.post("/init", async (req, res) => {
       status: "error",
       statuscode: 500,
       data: {
-        result: "An unexpected error occurred, failed to populate database",
+        result: error.message,
       },
     });
   }

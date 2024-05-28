@@ -3,27 +3,35 @@ class BrandsService {
     this.db = db.sequelize;
     this.Brand = db.Brand;
   }
-
-  async create(name) {
-    return this.Brand.create({
-      name: name,
-    });
+  async getAllBrand() {
+    return this.Brand.findAll();
   }
 
-  async getAll() {
-    return this.Brand.findAll({
-      where: {},
-    });
+  async createBrand(name) {
+    return this.Brand.create({ name });
   }
 
-  async update(brandsId, name) {
-    return this.Brand.update({ name }, { where: { id: brandsId } });
+  async getBrandById(id) {
+    return this.Brand.findByPk(id);
   }
 
-  async deletebrands(brandsId) {
-    return this.Brand.destroy({
-      where: { id: brandsId },
-    });
+  async updateBrand(id, newData) {
+    const brand = await this.Brand.findByPk(id);
+    return brand.update(newData);
+  }
+
+  async deleteBrand(id) {
+    const brand = await this.Brand.findByPk(id);
+
+    if (brand) {
+      const products = await brand.getProducts();
+
+      if (products.length > 0) {
+        throw new Error("Brand is assigned to products and cannot be deleted");
+      }
+      return brand.destroy();
+    }
+    return null;
   }
 }
 module.exports = BrandsService;

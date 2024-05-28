@@ -10,6 +10,7 @@ class MembershipService {
     this.User = db.User;
     this.Category = db.Category;
     this.Brand = db.Brand;
+    this.Membership = db.Membership;
   }
 
   async insertData() {
@@ -86,8 +87,6 @@ class MembershipService {
   }
 
   async createAdminUser() {
-    const adminRole = await this.Role.findOne({ where: { name: "Admin" } });
-
     const existingAdminUser = await this.User.findOne({
       where: { userName: "Admin" },
     });
@@ -110,8 +109,7 @@ class MembershipService {
       salt: salt,
       address: "Online",
       telephoneNumber: "911",
-      role: adminRole.name,
-      RoleId: "1",
+      RoleId: 1,
     });
 
     return;
@@ -130,7 +128,7 @@ class MembershipService {
         { name: "Gold", purchaseCount: 30, discount: 0.3 },
       ]);
 
-      return "Membership table populated successfully";
+      return;
     } catch (error) {
       throw new error("Failed to populating Membership table");
     }
@@ -150,6 +148,9 @@ class MembershipService {
     } catch (error) {
       throw new Error(`${error.message}`);
     }
+  }
+  async getAllMembership() {
+    return this.Membership.findAll();
   }
 }
 

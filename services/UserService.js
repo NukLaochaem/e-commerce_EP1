@@ -38,6 +38,8 @@ class UserService {
       salt: salt,
       address: address,
       telephoneNumber: telephonenumber,
+      RoleId: 2,
+      MembershipId: 1,
     });
     return user;
   }
@@ -58,6 +60,34 @@ class UserService {
       .toString("hex");
 
     return hashedPassword === user.password ? user : null;
+  }
+
+  async updateUserMembership(userId) {
+    const user = await User.findByPk(userId);
+    if (user) {
+      let membership;
+      if (user.purchaseCount >= 30) {
+        membership = await Membership.findOne({ where: { name: "Gold" } });
+      } else if (user.purchaseCount >= 15) {
+        membership = await Membership.findOne({ where: { name: "Silver" } });
+      } else {
+        membership = await Membership.findOne({ where: { name: "Bronze" } });
+      }
+
+      if (membership) {
+        user.membershipId = membership.id;
+        await user.save();
+      }
+    }
+  }
+
+  async userPurchase(userId, purchaseCount) {
+    const user = await User.findByPk(userId);
+    if (user) {
+      user.purchaseCount += purchaseCount;
+      await user.save();
+      await updateUserMembership(userId);
+    }
   }
 }
 

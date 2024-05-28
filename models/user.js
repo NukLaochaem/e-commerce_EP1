@@ -8,20 +8,13 @@ module.exports = (sequelize, Sequelize) => {
     salt: Sequelize.DataTypes.STRING,
     address: Sequelize.DataTypes.STRING,
     telephoneNumber: Sequelize.DataTypes.STRING,
-    role: {
-      type: Sequelize.DataTypes.STRING,
-      defaultValue: "user",
-    },
-    membershipStatus: {
-      type: Sequelize.DataTypes.STRING,
-      defaultValue: "Bronze",
-    },
+    purchaseCount: Sequelize.DataTypes.INTEGER,
   });
   User.associate = (models) => {
-    User.belongsTo(models.Membership);
-    User.belongsTo(models.Role);
-    User.belongsTo(models.Cart);
-    User.belongsTo(models.Order);
+    User.belongsTo(models.Membership, { foreignKey: "MembershipId" });
+    User.belongsTo(models.Role, { foreignKey: "RoleId" });
+    User.hasOne(models.Cart, { foreignKey: "userId" });
+    User.hasMany(models.Order, { foreignKey: "userId" });
   };
 
   return User;

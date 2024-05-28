@@ -22,6 +22,7 @@ module.exports = (sequelize, Sequelize) => {
   });
 
   Product.associate = function (models) {
+    Product.belongsTo(models.Order, { foreignKey: "OrderId" });
     Product.belongsTo(models.Brand, { foreignKey: "CategoryId" });
     Product.belongsTo(models.Category, { foreignKey: "BrandId" });
   };

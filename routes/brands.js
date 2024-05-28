@@ -5,70 +5,123 @@ var BrandService = require("../services/BrandService");
 var db = require("../models");
 var brandService = new BrandService(db);
 
-//const { isAdmin } = require("../middleware/authMiddleware");
+const { isAdmin } = require("..//middleware/authMiddleware");
 
 /* GET Brands page. */
-
-//getting all brand
-router.get("/", async function (req, res, next) {
+router.get("/", async (req, res) => {
   try {
-    const brands = await brandService.findAll();
-    res.json(brands);
+    const brands = await brandService.getAllBrand();
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Brand found", brands },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch brand" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
   }
 });
 
-// adding new brand
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name } = req.body;
 
-    // Create a new product
-    const brands = await brandService.create({ name, description });
-    res.status(201).json(brands);
+    if (!name) {
+      return res.status(400).json({ error: "Brand name is required" });
+    }
+
+    const brand = await brandService.createBrand(name);
+
+    res.status(201).json({
+      status: "success",
+      statuscode: 201,
+      data: { result: "Brand has been added", brand },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to add brand" });
+    res.status(500).json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
   }
 });
 
 // editing/changing a brand
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price } = req.body;
-    // Find the product by ID and update its attributes
+    const { name } = req.body;
 
-    const [updated] = await brandService.update(
-      { name, description, price },
-      { where: { id } }
-    );
-    if (updated) {
-      res.json({ message: "brand updated successfully" });
-    } else {
-      res.status(404).json({ error: "brand not found" });
+    const existingBrand = await brandService.getBrandById(id);
+
+    if (!existingBrand) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Brand not found" },
+      });
     }
+    if (!name) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Brand name required" },
+      });
+    }
+
+    const updatedBrand = await brandService.updateBrand(id, { name });
+
+    return res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Brand has been updated", updatedBrand },
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update brand" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
   }
 });
 
 // delete/remove a brand
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    // Soft delete the product by updating its status
-    const [deleted] = await brandService.deletebrands(
-      { deletedAt: new Date() },
-      { where: { id } }
-    );
-    if (deleted) {
-      res.json({ message: "brand deleted successfully" });
-    } else {
-      res.status(404).json({ error: "brand not found" });
+
+    const existingBrand = await brandService.getBrandById(id);
+
+    if (!existingBrand) {
+      return res.json({
+        status: "error",
+        statuscode: 404,
+        data: { result: "Brand not found" },
+      });
+    }
+
+    const deletedBrand = await brandService.deleteBrand(id);
+
+    if (deletedBrand) {
+      res.json({
+        status: "success",
+        statuscode: 200,
+        data: {
+          result: "Brand has been deleted succesfully",
+          deletedBrand,
+        },
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete brand" });
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
   }
 });
 module.exports = router;

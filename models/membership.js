@@ -5,5 +5,9 @@ module.exports = (sequelize, Sequelize) => {
     discount: Sequelize.DataTypes.FLOAT,
   });
 
+  Membership.associate = function (models) {
+    Membership.hasMany(models.User, { foreignKey: "userId" });
+  };
+
   return Membership;
 };

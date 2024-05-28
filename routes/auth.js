@@ -1,11 +1,7 @@
 require("dotenv").config();
 var express = require("express");
 var router = express.Router();
-var bodyParser = require("body-parser");
-var jsonParser = bodyParser.json();
 
-var passport = require("passport");
-var LocalStrategy = require("passport-local");
 var jwt = require("jsonwebtoken");
 
 var db = require("../models");
@@ -45,7 +41,7 @@ router.post("/register", async (req, res, next) => {
       return res.status(400).json({
         status: "error",
         statuscode: 400,
-        data: { result: "Invalid email format" },
+        data: { result: error.message },
       });
     }
 
@@ -149,7 +145,7 @@ router.post("/login", async (req, res, next) => {
       status: "error",
       status: "500",
       data: {
-        result: "An unexpected error occurred while processing your request.",
+        result: error.message,
       },
     });
   }

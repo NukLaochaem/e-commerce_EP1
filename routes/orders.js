@@ -5,28 +5,27 @@ var OrderService = require("../services/OrderService");
 var db = require("../models");
 var orderService = new OrderService(db);
 
-//const { isAdmin, isAuthenticated } = require("../middleware/authMiddleware");
+const { isAuthorized } = require("../middleware/authMiddleware");
 
-/* GET order page. */
-
-// GET /orders - Get all orders for the logged-in user or all orders for all users if an admin user is logged in
+// GET /orders - Get all orders for logged-in user or all orders for admin
 router.get("/", async (req, res) => {
   try {
-    const orders = await orderService.getAll(req.user.id, req.user.isAdmin);
-    res.json(orders);
+    const isAdmin = req.user.role === "admin";
+    const orders = await orderService.getOrders(req.user.id, isAdmin);
+    res.status(200).json({ status: "success", data: orders });
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch orders" });
+    res.status(400).json({ status: "error", message: error.message });
   }
 });
 
-// PUT or PATCH /order - Change an order status (admin only)
-router.put("/", async (req, res) => {
+// PUT /orders/:id - Update order status (admin only)
+router.put("/:id", async (req, res) => {
   try {
-    const { orderId, newStatus } = req.body;
-    await orderService.updateStatus(orderId, newStatus);
-    res.json({ message: "Order status updated successfully" });
+    const { status } = req.body;
+    const order = await orderService.updateOrderStatus(req.params.id, status);
+    res.status(200).json({ status: "success", data: order });
   } catch (error) {
-    res.status(500).json({ error: "Failed to update order status" });
+    res.status(400).json({ status: "error", message: error.message });
   }
 });
 module.exports = router;

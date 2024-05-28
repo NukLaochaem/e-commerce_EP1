@@ -5,11 +5,10 @@ var CategoryService = require("../services/CategoryService");
 var db = require("../models");
 var categoryService = new CategoryService(db);
 
-//const { isAdmin } = require("../middleware/authMiddleware");
+const { isAdmin } = require("../middleware/authMiddleware");
 
 /* GET Categories page. */
 
-// GET all categories
 router.get("/", async (req, res) => {
   try {
     const categories = await categoryService.getAllCategories();
@@ -23,13 +22,13 @@ router.get("/", async (req, res) => {
     res.json({
       status: "error",
       statuscode: 500,
-      data: { result: "Failed to fetch categories" },
+      data: { result: error.message },
     });
   }
 });
 
 // POST add new category
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
   try {
     const { name } = req.body;
 
@@ -37,7 +36,7 @@ router.post("/", async (req, res) => {
       return res.json({
         status: "error",
         statuscode: 400,
-        data: { result: "Category name required" },
+        data: { result: error.message },
       });
     }
 
@@ -58,7 +57,7 @@ router.post("/", async (req, res) => {
 });
 
 // PUT update a category
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -69,7 +68,7 @@ router.put("/:id", async (req, res) => {
       return res.json({
         status: "error",
         statuscode: 404,
-        data: { result: "Category not found" },
+        data: { result: error.message },
       });
     }
     if (!name) {
@@ -97,7 +96,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE remove a category
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -107,7 +106,7 @@ router.delete("/:id", async (req, res) => {
       return res.json({
         status: "error",
         statuscode: 404,
-        data: { result: "Category not found" },
+        data: { result: error.message },
       });
     }
 

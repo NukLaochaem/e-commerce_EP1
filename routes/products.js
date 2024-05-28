@@ -5,6 +5,8 @@ var ProductService = require("../services/ProductService");
 var db = require("../models");
 var productService = new ProductService(db);
 
+const { isAdmin } = require("../middleware/authMiddleware");
+
 /* GET product page. */
 
 //getting all products
@@ -21,13 +23,13 @@ router.get("/", async (req, res) => {
     res.json({
       status: "error",
       statuscode: 500,
-      data: { result: "Failed to get products" },
+      data: { result: error.message },
     });
   }
 });
 
 // adding new products
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res, next) => {
   try {
     const { name, description, price, quantity, brand, category } = req.body;
 
@@ -40,9 +42,9 @@ router.post("/", async (req, res) => {
     } else if (!quantity) {
       return res.status(400).json({ error: "Quantity is required" });
     } else if (!brand) {
-      return res.status(400).json({ error: "Brand is required" });
+      return res.status(400).json({ error: "Brand Id number is required" });
     } else if (!category) {
-      return res.status(400).json({ error: "Category is required" });
+      return res.status(400).json({ error: "Category Id number is required" });
     }
 
     const product = await productService.addProduct(
@@ -63,13 +65,13 @@ router.post("/", async (req, res) => {
     res.json({
       status: "error",
       statuscode: 500,
-      data: { result: "Failed to add product" },
+      data: { result: error.message },
     });
   }
 });
 
 // editing/changing a product
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, description, price, quantity, brand, category } = req.body;
@@ -110,13 +112,13 @@ router.put("/:id", async (req, res) => {
     res.json({
       status: "error",
       statuscode: 500,
-      data: { result: "Failed to update product" },
+      data: { result: error.message },
     });
   }
 });
 
 // delete/remove a product
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -140,19 +142,19 @@ router.delete("/:id", async (req, res) => {
     res.json({
       status: "error",
       statuscode: 500,
-      data: { result: "Failed to delete product" },
+      data: { result: error.message },
     });
   }
 });
 
 // search and filter
-router.get("/search", async (req, res) => {
+router.get("/search", async (req, res, next) => {
   try {
     const products = await productService.getAllProducts();
 
     res.json(products);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch products" });
+    res.status(500).json({ result: error.message });
   }
 });
 
