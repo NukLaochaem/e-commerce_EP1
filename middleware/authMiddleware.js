@@ -20,11 +20,11 @@ module.exports = {
       const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
       const user = await User.findByPk(decoded.userId);
 
-      if (user.RoleId !== 2) {
+      if (!user) {
         return res.json({
           status: "error",
-          statuscode: 403,
-          data: { result: "Unauthorized" },
+          statuscode: 401,
+          data: { result: "Unauthorized, User not found" },
         });
       }
 

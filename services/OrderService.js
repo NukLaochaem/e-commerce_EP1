@@ -3,25 +3,34 @@ class OrderService {
     this.db = db.sequelize;
     this.Order = db.Order;
     this.OrderItem = db.OrderItem;
-    this.Cart = db.Cart;
-    this.CartItem = db.CartItem;
+    this.Product = db.Product;
+    this.User = db.User;
   }
 
   async getOrders(userId, isAdmin) {
     if (isAdmin) {
-      return Order.findAll({ include: [OrderItem] });
+      return await this.Order.findAll({
+        include: [{ model: this.OrderItem, include: [this.Product] }],
+      });
+    } else {
+      return await this.Order.findAll({
+        where: { userId },
+        include: [{ model: this.OrderItem, include: [this.Product] }],
+      });
     }
-    return Order.findAll({ where: { userId }, include: [OrderItem] });
   }
 
   async updateOrderStatus(orderId, status) {
-    const order = await Order.findByPk(orderId);
-    if (order) {
-      order.status = status;
-      await order.save();
-      return order;
+    const order = await this.Order.findByPk(orderId);
+
+    if (!order) {
+      throw new Error("Order not found");
     }
-    throw new Error("Order not found");
+
+    order.status = status;
+
+    await order.save();
+    return order;
   }
 }
 

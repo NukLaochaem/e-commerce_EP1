@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 class CartService {
   constructor(db) {
     this.db = db.sequelize;
@@ -73,7 +75,6 @@ class CartService {
     }
 
     let totalAmount = 0;
-
     for (const item of cart.CartItems) {
       const product = await this.Product.findByPk(item.productId);
 
@@ -83,7 +84,6 @@ class CartService {
 
       product.quantity -= item.quantity;
       await product.save();
-
       totalAmount += item.unitPrice * item.quantity;
     }
 
@@ -102,12 +102,19 @@ class CartService {
 
     const discountedTotalAmount = totalAmount * (1 - discount);
 
+    const generateOrderNumber = () => {
+      return crypto.randomBytes(4).toString("hex").substring(0, 8);
+    };
+    const orderNumber = generateOrderNumber();
+
     // Create a new order with the total amount and discount
     const order = await this.Order.create({
       userId,
       totalAmount: discountedTotalAmount,
       status: "In Progress",
       membershipDiscount: discount,
+      membershipStatus: updatedUser.Membership.name,
+      orderNumber,
     });
 
     // Create order items for each cart item

@@ -3,7 +3,9 @@ module.exports = (sequelize, Sequelize) => {
     "Order",
     {
       orderNumber: Sequelize.DataTypes.STRING,
+      userId: Sequelize.DataTypes.INTEGER,
       totalAmount: Sequelize.DataTypes.FLOAT,
+      membershipStatus: Sequelize.DataTypes.STRING,
       status: {
         type: Sequelize.DataTypes.STRING,
         defaultValue: "In Progress",
