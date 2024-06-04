@@ -1,8 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #dcdcdcb3;
 }
 
 a {
   color: #00B7FF;
+}
+.nav-link {
+  margin: 0 15px !important;
+  font-size: 1rem;
+  color: white;
+}
+.nav-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 6px ;
+}
+
+thead th{
+  background-color: #212529 !important;
+  color: #e6e8eb !important;
 }

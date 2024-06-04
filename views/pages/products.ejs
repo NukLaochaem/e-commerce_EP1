@@ -1,0 +1,126 @@
+<div class="container">
+  <h2>All Products </h2>
+  <%- include('../partials/search'); %>
+
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Image URL</th>
+          <th>image</th>
+          <th>Is Deleted</th>
+          <th>Date Added</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(product=> { %>
+          <tr>
+            <td>
+              <%= product.id %>
+            </td>
+            <td>
+              <%= product.name %>
+            </td>
+            <td>
+              <%= product.description %>
+            </td>
+            <td>
+              <%= product.quantity %>
+            </td>
+            <td>
+              <%= product.price %>
+            </td>
+            <td>
+              <%= product.brand %>
+            </td>
+            <td>
+              <%= product.category %>
+            </td>
+            <td>
+              <%= product.imgurl %>
+            </td>
+            <td><img src="<%= product.imgurl %>" alt="Products image" width="50"></td>
+            <td>
+              <%= product.deletedAt ? 'Yes' : 'No' %>
+            </td>
+            <td>
+              <%= product.date_added %>
+            </td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="">Delete</button>
+            </td>
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="productModalLabel">Edit Product Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="productForm">
+          <div class="form-group mb-2">
+            <label for="productId">Id</label>
+            <input type="text" id="productId" class="form-control" disabled>
+          </div>
+          <div class="form-group my-3">
+            <label for="productName">Name</label>
+            <input type="text" id="productName" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="productBrand">Brand</label>
+            <input type="text" id="productBrand" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="productCategory">Category</label>
+            <input type="text" id="productCategory" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="productDescription">Description</label>
+            <textarea id="productDescription" class="form-control"></textarea>
+          </div>
+          <div class="form-group my-3">
+            <label for="productQuantity">Quantity</label>
+            <input type="number" id="productQuantity" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="productPrice">Price</label>
+            <input type="number" id="productPrice" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label for="productDeleted">Is Deleted</label>
+            <select id="productDeleted" class="form-select">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveProductChangesButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+</script>

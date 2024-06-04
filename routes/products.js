@@ -148,6 +148,7 @@ router.delete("/:id", isAdmin, async (req, res, next) => {
 });
 
 // search and filter
+/*
 router.get("/search", async (req, res, next) => {
   try {
     const products = await productService.getAllProducts();
@@ -156,6 +157,6 @@ router.get("/search", async (req, res, next) => {
   } catch (error) {
     res.status(500).json({ result: error.message });
   }
-});
+});*/
 
 module.exports = router;

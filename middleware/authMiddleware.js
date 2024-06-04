@@ -4,17 +4,16 @@ const User = db.User;
 
 module.exports = {
   isAuthorized: async function (req, res, next) {
-    const authHeader = req.header("Authorization");
+    const token =
+      req.cookies.token || req.header("Authorization")?.split(" ")[1];
 
-    if (!authHeader) {
+    if (!token) {
       return res.json({
         status: "error",
         statuscode: 401,
         data: { result: "Login required" },
       });
     }
-
-    const token = authHeader.split(" ")[1];
 
     try {
       const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -31,7 +30,7 @@ module.exports = {
       req.user = { id: user.id, roleId: user.RoleId };
       next();
     } catch (error) {
-      return res.status(401).json({
+      return res.json({
         status: "error",
         statuscode: 401,
         data: { result: "Invalid token" },
@@ -40,22 +39,22 @@ module.exports = {
   },
 
   isAdmin: async function (req, res, next) {
-    const authHeader = req.header("Authorization");
+    const token =
+      req.cookies.token || req.header("Authorization")?.split(" ")[1];
 
-    if (!authHeader) {
-      return res.status(401).json({
+    if (!token) {
+      return res.json({
         status: "error",
         statuscode: 401,
         data: { result: "Login required" },
       });
     }
-    const token = authHeader.split(" ")[1];
 
     try {
       const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
       const user = await User.findByPk(decoded.userId);
 
-      if (user.RoleId !== 1) {
+      if (!user || user.RoleId !== 1) {
         return res.json({
           status: "error",
           statuscode: 403,

@@ -9,8 +9,16 @@ var SearchService = require("../services/searchService");
 var searchService = new SearchService(db);
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
+router.get("/", async (req, res, next) => {
+  try {
+    res.render("index", { title: "Admin Login page" });
+  } catch (error) {
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
+  }
 });
 
 router.post("/init", async (req, res) => {
@@ -35,6 +43,7 @@ router.post("/init", async (req, res) => {
   }
 });
 
+//move to product?
 router.post("/search", async (req, res) => {
   const { productName, categoryName, brandName } = req.body;
 

@@ -4,7 +4,6 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var passport = require("passport");
 var session = require("express-session");
 var SQLiteStore = require("connect-sqlite3")(session);
 
@@ -33,6 +32,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  "/css",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))
+);
+app.use(
+  "/js",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))
+);
 
 app.use(
   session({
@@ -42,7 +49,6 @@ app.use(
     store: new SQLiteStore(),
   })
 );
-app.use(passport.authenticate("session"));
 
 app.use("/", indexRouter);
 

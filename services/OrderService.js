@@ -21,15 +21,21 @@ class OrderService {
   }
 
   async updateOrderStatus(orderId, status) {
-    const order = await this.Order.findByPk(orderId);
+    const allowedStatuses = ["In Progress", "Ordered", "Completed"];
+    if (!allowedStatuses.includes(status)) {
+      throw new Error(
+        "Invalid status. Allowed values are: 'In Progress', 'Ordered', 'Completed'."
+      );
+    }
 
+    const order = await this.Order.findByPk(orderId);
     if (!order) {
       throw new Error("Order not found");
     }
 
     order.status = status;
-
     await order.save();
+
     return order;
   }
 }

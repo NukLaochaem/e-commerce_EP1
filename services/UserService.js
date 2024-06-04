@@ -5,6 +5,8 @@ class UserService {
   constructor(db) {
     this.db = db.sequelize;
     this.User = db.User;
+    this.Role = db.Role;
+    this.Membership = db.Membership;
   }
 
   async findUserByEmailOrUsername(email, username) {
@@ -88,6 +90,35 @@ class UserService {
       await user.save();
       await updateUserMembership(userId);
     }
+  }
+  async getAllUsers() {
+    const users = await this.User.findAll({
+      include: [
+        {
+          model: this.Membership,
+          attributes: ["name"],
+        },
+      ],
+    });
+
+    return users;
+  }
+  async getRoles() {
+    const roles = await this.Role.findAll();
+    return roles;
+  }
+
+  async updateUser(userId, email, firstName, lastName, roleId) {
+    const user = await this.User.findByPk(userId);
+
+    user.email = email;
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.RoleId = roleId;
+
+    await user.save();
+
+    return user;
   }
 }
 

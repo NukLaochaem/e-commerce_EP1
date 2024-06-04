@@ -8,6 +8,8 @@ var db = require("../models");
 var UserService = require("../services/UserService");
 var userService = new UserService(db);
 
+var { isAdmin } = require("../middleware/authMiddleware");
+
 router.post("/register", async (req, res, next) => {
   try {
     const {
@@ -108,6 +110,7 @@ router.post("/login", async (req, res, next) => {
         data: { result: "Username or email is required" },
       });
     }
+
     const existingUser = await userService.findUser(
       username || email,
       password
@@ -129,6 +132,12 @@ router.post("/login", async (req, res, next) => {
       { expiresIn: "2h" }
     );
 
+    res.cookie("token", token, { httpOnly: true });
+
+    if (req.headers.accept && req.headers.accept.includes("text/html")) {
+      return res.redirect("/admin/products");
+    }
+
     res.json({
       status: "success",
       statuscde: 200,
@@ -147,6 +156,68 @@ router.post("/login", async (req, res, next) => {
       data: {
         result: error.message,
       },
+    });
+  }
+});
+
+router.get("/users", isAdmin, async (req, res) => {
+  try {
+    const users = await userService.getAllUsers();
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "Users found", users },
+    });
+  } catch (error) {
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
+  }
+});
+
+router.put("/users", isAdmin, async (req, res) => {
+  try {
+    const { id, email, firstName, lastName, role } = req.body;
+
+    const user = await userService.updateUser(
+      id,
+      email,
+      firstName,
+      lastName,
+      role
+    );
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "user has been update", user },
+    });
+  } catch (error) {
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
+    });
+  }
+});
+
+router.get("/roles", isAdmin, async (req, res) => {
+  try {
+    const roles = await userService.getRoles();
+
+    res.json({
+      status: "success",
+      statuscode: 200,
+      data: { result: "roles found", roles },
+    });
+  } catch (error) {
+    res.json({
+      status: "error",
+      statuscode: 500,
+      data: { result: error.message },
     });
   }
 });
