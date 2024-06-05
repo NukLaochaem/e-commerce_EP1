@@ -7,7 +7,6 @@ var orderService = new OrderService(db);
 
 const { isAuthorized, isAdmin } = require("../middleware/authMiddleware");
 
-// GET /orders - Get all orders for logged-in user or all orders for admin
 router.get("/", isAuthorized, async (req, res, next) => {
   try {
     const isAdminUser = req.user.roleId === 1;
@@ -27,7 +26,6 @@ router.get("/", isAuthorized, async (req, res, next) => {
   }
 });
 
-// PUT /orders/:id - Update order status (admin only)
 router.put("/:id", isAdmin, async (req, res, next) => {
   try {
     const { status } = req.body;

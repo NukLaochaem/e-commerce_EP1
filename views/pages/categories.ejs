@@ -2,7 +2,8 @@
   <h2>Categories</h2>
 
   <div class="container">
-    <button class="btn btn-success btn-sm float-end px-4 my-1 add-button" type="submit"><i class="bi bi-plus-lg">
+    <button class="btn btn-success btn-sm float-end px-4 my-1 add-button" type="button" data-bs-toggle="modal"
+      data-bs-target="#addModal"><i class="bi bi-plus-lg">
       </i>Add</button>
   </div>
 
@@ -12,7 +13,6 @@
         <th>Id</th>
         <th>Name</th>
         <th>Options</th>
-
       </tr>
     </thead>
     <tbody>
@@ -26,8 +26,10 @@
           </td>
 
           <td>
-            <button class="btn btn-warning btn-sm edit-button" data-id="<%= category.id %>"
-              data-name="<%= category.name %>">Edit</button>
+            <button class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal" data-id="<%= category.id %>"
+              data-name="<%= category.name %>" data-bs-target="#exampleModal">Edit
+            </button>
+
             <button class="btn btn-danger btn-sm delete-button" data-id="<%= category.id %>">Delete</button>
           </td>
         </tr>
@@ -37,50 +39,105 @@
 </div>
 
 
-<script>
-  // Handle Add button click
-  document.querySelectorAll('.add-button').forEach(button => {
-    button.addEventListener('click', function () {
-      const name = prompt("Enter new category name:");
 
-      if (name) {
-        fetch('http://localhost:3000/categories', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: name })
-        })
-          .then(response => response.json())
-          .then(data => {
-            window.location.reload();
-          })
-      }
-    });
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Cateory details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editCateoryForm">
+          <div class="form-group mb-2">
+            <label for="editCategoryId">Id</label>
+            <input type="text" id="editCategoryId" class="form-control" disabled>
+          </div>
+          <div class="form-group my-3">
+            <label for="editCategoryName">Name</label>
+            <input type="text" id="editCategoryName" class="form-control" required>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChangesButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new Category</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editBrandForm">
+          <div class="form-group my-3">
+            <label for="addCategory">Category Name</label>
+            <input type="text" id="addCategory" class="form-control mt-2" required>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveAddButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.getElementById('saveAddButton').addEventListener("click", function () {
+    const name = document.getElementById('addCategory').value;
+
+    fetch('http://localhost:3000/categories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
+    })
+      .then(response => response.json())
+      .then(data => {
+        window.location.reload();
+      })
   });
-  // Handle Edit button click
+
   document.querySelectorAll('.edit-button').forEach(button => {
     button.addEventListener('click', function () {
-
-      const id = this.getAttribute('data-id');
-      const currentName = this.getAttribute('data-name');
-      const newName = prompt("Enter new category name:", currentName);
-
-      if (newName) {
-        fetch(`http://localhost:3000/categories/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: newName })
-        })
-          .then(response => response.json())
-          .then(data => {
-            window.location.reload();
-          })
-
-      }
+      document.getElementById('editCategoryId').value = this.getAttribute('data-id');
+      document.getElementById('editCategoryName').value = this.getAttribute('data-name');
     });
+  });
+
+  document.getElementById('saveChangesButton').addEventListener('click', function () {
+    const id = document.getElementById('editCategoryId').value;
+    const name = document.getElementById('editCategoryName').value;
+
+    fetch(`http://localhost:3000/categories/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
+      })
+      .catch(error => console.error('Error:', error));
   });
 
   // Handle Delete button click (unchanged)
@@ -96,7 +153,15 @@
             'Content-Type': 'application/json'
           }
         })
-          .then(() => window.location.reload())
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              window.location.reload();
+            } else {
+              alert('Error: ' + data.data.result);
+            }
+          })
+          .catch(error => console.error('Error:', error));
       }
     });
   });

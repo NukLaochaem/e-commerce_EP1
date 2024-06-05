@@ -5,8 +5,6 @@ var MembershipService = require("../services/MembershipService");
 var db = require("../models");
 var membershipService = new MembershipService(db);
 
-/* GET Membership page. */
-
 router.get("/", async (req, res) => {
   try {
     const membership = await membershipService.getAllMembership();
@@ -19,7 +17,7 @@ router.get("/", async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }

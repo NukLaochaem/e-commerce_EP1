@@ -21,7 +21,15 @@ class ProductsService {
     });
   }
 
-  async addProduct(name, description, price, quantity, brandId, categoryId) {
+  async addProduct(
+    name,
+    description,
+    price,
+    quantity,
+    brandId,
+    categoryId,
+    imgurl
+  ) {
     const product = await this.Product.create({
       name,
       description,
@@ -29,6 +37,7 @@ class ProductsService {
       quantity,
       BrandId: brandId,
       CategoryId: categoryId,
+      imgurl: imgurl,
     });
 
     return product;
@@ -38,8 +47,14 @@ class ProductsService {
     return this.Product.findByPk(id);
   }
 
-  async updateProduct(id, data) {
-    return this.Product.update(data, { where: { id } });
+  async updateProduct(productId, updateData) {
+    const product = await this.Product.findByPk(productId);
+
+    Object.assign(product, updateData);
+
+    await product.save();
+
+    return product;
   }
 
   async deleteProduct(id) {

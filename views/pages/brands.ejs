@@ -2,10 +2,10 @@
   <h2>Brands</h2>
 
   <div class="container">
-    <button class="btn btn-success btn-sm float-end px-4 my-1 add-button" type="submit"><i class="bi bi-plus-lg"></i>
+    <button class="btn btn-success btn-sm float-end px-4 my-1 add-button" type="submit" data-bs-toggle="modal"
+      data-bs-target="#addModal"><i class="bi bi-plus-lg"></i>
       Add</button>
   </div>
-
   <table class="table table-bordered mt-3">
     <thead>
       <tr>
@@ -26,8 +26,8 @@
           </td>
 
           <td>
-            <button class="btn btn-warning btn-sm edit-button" data-id="<%= brand.id %>"
-              data-name="<%= brand.name %>">Edit</button>
+            <button class="btn btn-warning btn-sm edit-button" data-bs-toggle="modal" data-id="<%= brand.id %>"
+              data-name="<%= brand.name %>" data-bs-target="#exampleModal">Edit</button>
             <button class="btn btn-danger btn-sm delete-button" data-id="<%= brand.id %>">Delete</button>
           </td>
         </tr>
@@ -37,49 +37,115 @@
 </div>
 
 
-<script>
-  // Handle Add button click
-  document.querySelectorAll('.add-button').forEach(button => {
-    button.addEventListener('click', function () {
-      const name = prompt("Enter brand name:");
 
-      if (name) {
-        fetch('http://localhost:3000/brands', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: name })
-        })
-          .then(response => response.json())
-          .then(data => {
-            window.location.reload();
-          })
-      }
-    });
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Brand details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form id="editBrandForm">
+          <div class="form-group mb-2">
+            <label for="editBrandId">Id</label>
+            <input type="text" id="editBrandId" class="form-control" disabled>
+          </div>
+          <div class="form-group my-3">
+            <label for="editBrandName">Name</label>
+            <input type="text" id="editBrandName" class="form-control" required>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChangesButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add new Brand</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editBrandForm">
+          <div class="form-group my-3">
+            <label for="addBrand">Brand Name</label>
+            <input type="text" id="addBrand" class="form-control mt-2" required>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveAddButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.getElementById('saveAddButton').addEventListener("click", function () {
+    const name = document.getElementById('addBrand').value;
+
+    fetch('http://localhost:3000/brands', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
+      })
+      .catch(error => console.error('Error:', error));
   });
-  // Handle Edit button click
+
+
+
+
+
   document.querySelectorAll('.edit-button').forEach(button => {
     button.addEventListener('click', function () {
-      const id = this.getAttribute('data-id');
-      const currentName = this.getAttribute('data-name');
-      const newName = prompt("Enter new brand name:", currentName);
-
-      if (newName) {
-        fetch(`http://localhost:3000/brands/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: newName })
-        })
-          .then(response => response.json())
-          .then(data => {
-            window.location.reload();
-          })
-
-      }
+      document.getElementById('editBrandId').value = this.getAttribute('data-id');
+      document.getElementById('editBrandName').value = this.getAttribute('data-name');
     });
+  });
+
+  document.getElementById('saveChangesButton').addEventListener('click', function () {
+    const id = document.getElementById('editBrandId').value;
+    const name = document.getElementById('editBrandName').value;
+
+    fetch(`http://localhost:3000/brands/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
+      })
+      .catch(error => console.error('Error:', error));
   });
 
   // Handle Delete button click (unchanged)
@@ -94,7 +160,15 @@
             'Content-Type': 'application/json'
           }
         })
-          .then(() => window.location.reload())
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              window.location.reload();
+            } else {
+              alert('Error: ' + data.data.result);
+            }
+          })
+          .catch(error => console.error('Error:', error));
       }
     });
   });

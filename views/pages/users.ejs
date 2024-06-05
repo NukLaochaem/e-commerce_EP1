@@ -134,8 +134,13 @@
     })
       .then(response => response.json())
       .then(data => {
-        window.location.reload();
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
       })
+      .catch(error => console.error('Error:', error));
 
   });
 </script>

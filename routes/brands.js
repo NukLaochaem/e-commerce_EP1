@@ -7,7 +7,6 @@ var brandService = new BrandService(db);
 
 const { isAdmin } = require("..//middleware/authMiddleware");
 
-/* GET Brands page. */
 router.get("/", async (req, res) => {
   try {
     const brands = await brandService.getAllBrand();
@@ -50,7 +49,6 @@ router.post("/", isAdmin, async (req, res) => {
   }
 });
 
-// editing/changing a brand
 router.put("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,7 +87,6 @@ router.put("/:id", isAdmin, async (req, res) => {
   }
 });
 
-// delete/remove a brand
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;

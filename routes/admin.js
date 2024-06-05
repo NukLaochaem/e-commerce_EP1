@@ -4,7 +4,6 @@ var router = express.Router();
 var { isAdmin } = require("../middleware/authMiddleware");
 var axios = require("axios");
 
-//To show / edit all products
 router.get("/products", isAdmin, async (req, res, next) => {
   try {
     const response = await axios.get("http://localhost:3000/products");
@@ -87,7 +86,6 @@ router.get("/roles", isAdmin, async (req, res, next) => {
   }
 });
 
-//Admin users can change registered/signed-up user roles to admin from the back-end user interface.
 router.get("/users", isAdmin, async (req, res, next) => {
   const response = await axios.get("http://localhost:3000/auth/users", {
     headers: {
@@ -112,7 +110,6 @@ router.get("/users", isAdmin, async (req, res, next) => {
   }
 });
 
-// change order status
 router.get("/orders", isAdmin, async (req, res, next) => {
   const response = await axios.get("http://localhost:3000/orders", {
     headers: {

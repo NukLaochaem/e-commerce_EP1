@@ -1,8 +1,11 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/MMGe6Xp0)
 
 ![](http://143.42.108.232/pvt/Noroff-64.png)
+
 # Noroff
+
 ## Back-end Development Year 1
+
 ### EP - Course Assignment
 
 Startup code for Noroff back-end development 1 - EP course (e-commerce).
@@ -21,3 +24,10 @@ If you are unsure of any instructions for the course assignment, contact out to 
 **REMEMBER** Your Moodle LMS submission must have your repository link **AND** your Github username in the text file.
 
 ---
+
+\*\*REFERENCES
+
+- Acknowledgments of any help received from other students (If the student is working in a mentor group)
+- Any code or knowledge that has been sourced from internet forums, textbooks, AI-generated code, etc.
+
+Source: chatgpt, googling, w3schools

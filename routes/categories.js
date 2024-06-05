@@ -21,13 +21,12 @@ router.get("/", async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
 });
 
-// POST add new category
 router.post("/", isAdmin, async (req, res) => {
   try {
     const { name } = req.body;
@@ -50,13 +49,12 @@ router.post("/", isAdmin, async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
-      data: { result: "Failed to add category" },
+      statuscode: 400,
+      data: { result: error.message },
     });
   }
 });
 
-// PUT update a category
 router.put("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,13 +87,12 @@ router.put("/:id", isAdmin, async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
-      data: { result: "Failed to update category" },
+      statuscode: 400,
+      data: { result: error.message },
     });
   }
 });
 
-// DELETE remove a category
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -125,7 +122,7 @@ router.delete("/:id", isAdmin, async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }

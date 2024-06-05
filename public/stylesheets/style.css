@@ -24,3 +24,7 @@ thead th{
   background-color: #212529 !important;
   color: #e6e8eb !important;
 }
+#productsTable td.imgurl {
+  max-width: 150px;
+  overflow: auto;
+}

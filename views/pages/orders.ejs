@@ -33,7 +33,9 @@
             <%= order.userId %>
           </td>
           <td>
-            <%= order.status %>
+            <mark>
+              <%= order.status %>
+            </mark>
           </td>
           <td>
             <button type="button" class="btn btn-warning btn-sm edit-order-button" data-bs-toggle="modal"
@@ -101,7 +103,11 @@
     })
       .then(response => response.json())
       .then(data => {
-        window.location.reload();
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
       })
       .catch(error => console.error('Error:', error));
   });

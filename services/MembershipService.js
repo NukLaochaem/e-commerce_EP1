@@ -110,7 +110,7 @@ class MembershipService {
       address: "Online",
       telephoneNumber: "911",
       RoleId: 1,
-      Membership,
+      MembershipId: 3,
     });
 
     return;

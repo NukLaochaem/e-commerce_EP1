@@ -93,7 +93,7 @@ router.post("/register", async (req, res, next) => {
       status: "error",
       statuscode: 500,
       data: {
-        result: "An unexpected error occurred while processing your request.",
+        result: error.message,
       },
     });
   }
@@ -152,7 +152,7 @@ router.post("/login", async (req, res, next) => {
   } catch (error) {
     return res.json({
       status: "error",
-      status: "500",
+      status: 500,
       data: {
         result: error.message,
       },

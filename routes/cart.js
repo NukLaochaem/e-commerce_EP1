@@ -7,9 +7,6 @@ var cartService = new CartService(db);
 
 const { isAuthorized } = require("../middleware/authMiddleware");
 
-/* GET cart page. */
-
-// GET /cart - Get active cart
 router.get("/", isAuthorized, async (req, res) => {
   try {
     const cart = await cartService.getCart(req.user.id);
@@ -28,7 +25,6 @@ router.get("/", isAuthorized, async (req, res) => {
   }
 });
 
-// POST /cart - Add product to cart
 router.post("/", isAuthorized, async (req, res) => {
   try {
     const { productId, quantity } = req.body;
@@ -53,7 +49,6 @@ router.post("/", isAuthorized, async (req, res) => {
   }
 });
 
-// POST /cart/checkout/now - Checkout cart
 router.post("/checkout/now", isAuthorized, async (req, res) => {
   try {
     const order = await cartService.checkoutCart(req.user.id);
@@ -72,7 +67,6 @@ router.post("/checkout/now", isAuthorized, async (req, res) => {
   }
 });
 
-// PUT /cart - Update cart item quantity
 router.put("/", isAuthorized, async (req, res) => {
   try {
     const { productId, quantity } = req.body;
@@ -97,7 +91,6 @@ router.put("/", isAuthorized, async (req, res) => {
   }
 });
 
-// DELETE /cart - Remove product from cart
 router.delete("/", isAuthorized, async (req, res) => {
   try {
     const { productId } = req.body;

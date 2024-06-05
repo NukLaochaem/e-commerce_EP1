@@ -15,7 +15,7 @@ router.get("/", async (req, res, next) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
@@ -35,7 +35,7 @@ router.post("/init", async (req, res) => {
   } catch (error) {
     return res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: {
         result: error.message,
       },
@@ -43,7 +43,6 @@ router.post("/init", async (req, res) => {
   }
 });
 
-//move to product?
 router.post("/search", async (req, res) => {
   const { productName, categoryName, brandName } = req.body;
 
@@ -71,7 +70,7 @@ router.post("/search", async (req, res) => {
       data: {
         result: "Products found",
         totalFound: products.length,
-        items: products,
+        products: products,
       },
     });
   } catch (error) {

@@ -7,9 +7,6 @@ var productService = new ProductService(db);
 
 const { isAdmin } = require("../middleware/authMiddleware");
 
-/* GET product page. */
-
-//getting all products
 router.get("/", async (req, res) => {
   try {
     const products = await productService.getAllProducts();
@@ -22,16 +19,16 @@ router.get("/", async (req, res) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
 });
 
-// adding new products
 router.post("/", isAdmin, async (req, res, next) => {
   try {
-    const { name, description, price, quantity, brand, category } = req.body;
+    const { name, description, price, quantity, brand, category, imgurl } =
+      req.body;
 
     if (!name) {
       return res.status(400).json({ error: "Name is required" });
@@ -53,7 +50,8 @@ router.post("/", isAdmin, async (req, res, next) => {
       price,
       quantity,
       brand,
-      category
+      category,
+      imgurl
     );
 
     res.json({
@@ -64,23 +62,34 @@ router.post("/", isAdmin, async (req, res, next) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
 });
 
-// editing/changing a product
 router.put("/:id", isAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, description, price, quantity, brand, category } = req.body;
+    const { name, description, price, quantity, brandId, categoryId, imgurl } =
+      req.body;
 
-    if (!name && !description && !price && !quantity && !brand && !category) {
+    if (
+      !name &&
+      !description &&
+      !price &&
+      !quantity &&
+      !brandId &&
+      !categoryId &&
+      !imgurl
+    ) {
       return res.json({
         status: "error",
         statuscode: 404,
-        data: { result: "Field must be provided" },
+        data: {
+          result:
+            "Field must be provided: name, description, price, quantity, brandId, categoryId or imgurl",
+        },
       });
     }
 
@@ -90,7 +99,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
       return res.json({
         status: "error",
         statuscode: 404,
-        data: { result: "Product not found" },
+        data: { result: "Product not found or been deleted" },
       });
     }
 
@@ -99,8 +108,9 @@ router.put("/:id", isAdmin, async (req, res, next) => {
       description,
       price,
       quantity,
-      brand,
-      category,
+      BrandId: brandId,
+      CategoryId: categoryId,
+      imgurl,
     });
 
     return res.json({
@@ -111,13 +121,12 @@ router.put("/:id", isAdmin, async (req, res, next) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
 });
 
-// delete/remove a product
 router.delete("/:id", isAdmin, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -141,22 +150,10 @@ router.delete("/:id", isAdmin, async (req, res, next) => {
   } catch (error) {
     res.json({
       status: "error",
-      statuscode: 500,
+      statuscode: 400,
       data: { result: error.message },
     });
   }
 });
-
-// search and filter
-/*
-router.get("/search", async (req, res, next) => {
-  try {
-    const products = await productService.getAllProducts();
-
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ result: error.message });
-  }
-});*/
 
 module.exports = router;

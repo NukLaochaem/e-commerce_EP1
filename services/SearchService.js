@@ -6,24 +6,28 @@ class SearchService {
   }
 
   async searchProducts({ productName, categoryName, brandName }) {
-    let query = "SELECT * FROM Products WHERE 1=1 ";
+    let query = `
+      SELECT p.*, b.name AS brandName, c.name AS categoryName
+      FROM Products p
+      LEFT JOIN Brands b ON p.brandId = b.id
+      LEFT JOIN Categories c ON p.categoryId = c.id
+      WHERE 1=1 
+    `;
 
     const replacements = {};
 
     if (productName) {
-      query += "AND name LIKE :productName ";
+      query += "AND p.name LIKE :productName ";
       replacements.productName = `%${productName}%`;
     }
 
     if (categoryName) {
-      query +=
-        "AND categoryId IN (SELECT id FROM Categories WHERE name = :categoryName) ";
+      query += "AND c.name = :categoryName ";
       replacements.categoryName = categoryName;
     }
 
     if (brandName) {
-      query +=
-        "AND brandId IN (SELECT id FROM Brands WHERE name = :brandName) ";
+      query += "AND b.name = :brandName ";
       replacements.brandName = brandName;
     }
 
