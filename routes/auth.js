@@ -41,7 +41,7 @@ router.post("/register", async (req, res, next) => {
 
     const telephoneNumberRegex = /^\d{10}$/;
     if (!telephoneNumberRegex.test(telephonenumber)) {
-      return res.baseJson(400, "Please provide a valid telephone Numbers");
+      return res.baseJson(400, "Please provide a valid telephone number");
     }
 
     const existingUser = await userService.findUserByEmailOrUsername(

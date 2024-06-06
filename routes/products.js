@@ -46,7 +46,7 @@ router.post("/", isAdmin, async (req, res, next) => {
       imgurl
     );
 
-    res.baseJson(200, "Product has been added", { product });
+    res.baseJson(201, "Product has been added", { product });
   } catch (error) {
     res.baseJson(500, error.message);
   }

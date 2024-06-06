@@ -28,7 +28,7 @@ router.post("/", isAdmin, async (req, res) => {
     }
     const category = await categoryService.createCategory(name);
 
-    res.baseJson(200, "New category has been added", { category });
+    res.baseJson(201, "New category has been added", { category });
   } catch (error) {
     res.baseJson(500, error.message);
   }

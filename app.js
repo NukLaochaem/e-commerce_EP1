@@ -19,9 +19,6 @@ var adminRouter = require("./routes/admin");
 var authRouter = require("./routes/auth");
 var membershipRouter = require("./routes/membership");
 
-var db = require("./models");
-db.sequelize.sync({ force: false });
-
 var app = express();
 
 // view engine setup
