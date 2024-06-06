@@ -13,11 +13,7 @@ router.get("/", async (req, res, next) => {
   try {
     res.render("index", { title: "Admin Login page" });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -25,21 +21,9 @@ router.post("/init", async (req, res) => {
   try {
     await membershipService.initializeDatabase();
 
-    return res.json({
-      status: "success",
-      statuscode: 200,
-      data: {
-        result: "Database population completed successfully",
-      },
-    });
+    res.baseJson(200, "Database population completed successfully");
   } catch (error) {
-    return res.json({
-      status: "error",
-      statuscode: 400,
-      data: {
-        result: error.message,
-      },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -47,14 +31,10 @@ router.post("/search", async (req, res) => {
   const { productName, categoryName, brandName } = req.body;
 
   if (!productName && !categoryName && !brandName) {
-    return res.json({
-      status: "error",
-      statuscode: 400,
-      data: {
-        result:
-          "At least one search criteria (productName, categoryName, brandName) is required.",
-      },
-    });
+    return res.baseJson(
+      400,
+      "At least one search criteria (productName, categoryName, brandName) is required."
+    );
   }
 
   try {
@@ -63,24 +43,12 @@ router.post("/search", async (req, res) => {
       categoryName,
       brandName,
     });
-
-    res.json({
-      statuscode: 200,
-      status: "success",
-      data: {
-        result: "Products found",
-        totalFound: products.length,
-        products: products,
-      },
+    res.baseJson(200, "Products found", {
+      totalFound: products.length,
+      products: products,
     });
   } catch (error) {
-    res.json({
-      statuscode: 400,
-      status: "error",
-      data: {
-        result: error.message,
-      },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

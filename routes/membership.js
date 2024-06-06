@@ -9,17 +9,9 @@ router.get("/", async (req, res) => {
   try {
     const membership = await membershipService.getAllMembership();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "All memberships found", membership },
-    });
+    res.baseJson(200, "All memberships found", { membership });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

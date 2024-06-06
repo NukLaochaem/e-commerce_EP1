@@ -11,17 +11,9 @@ router.get("/", async (req, res) => {
   try {
     const brands = await brandService.getAllBrand();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Brand found", brands },
-    });
+    res.baseJson(200, "Brand found", { brands });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -32,20 +24,11 @@ router.post("/", isAdmin, async (req, res) => {
     if (!name) {
       return res.status(400).json({ error: "Brand name is required" });
     }
-
     const brand = await brandService.createBrand(name);
 
-    res.status(201).json({
-      status: "success",
-      statuscode: 201,
-      data: { result: "Brand has been added", brand },
-    });
+    res.baseJson(201, "Brand has been added", { brand });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -57,33 +40,16 @@ router.put("/:id", isAdmin, async (req, res) => {
     const existingBrand = await brandService.getBrandById(id);
 
     if (!existingBrand) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Brand not found" },
-      });
+      return res.baseJson(404, "Brand not found");
     }
     if (!name) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Brand name required" },
-      });
+      return res.baseJson(404, "Brand name reqiured");
     }
-
     const updatedBrand = await brandService.updateBrand(id, { name });
 
-    return res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Brand has been updated", updatedBrand },
-    });
+    res.baseJson(201, "Brand has been updated", { updatedBrand });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -94,31 +60,16 @@ router.delete("/:id", isAdmin, async (req, res) => {
     const existingBrand = await brandService.getBrandById(id);
 
     if (!existingBrand) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Brand not found" },
-      });
+      return res.baseJson(404, "Brand not found");
     }
 
     const deletedBrand = await brandService.deleteBrand(id);
 
     if (deletedBrand) {
-      res.json({
-        status: "success",
-        statuscode: 200,
-        data: {
-          result: "Brand has been deleted succesfully",
-          deletedBrand,
-        },
-      });
+      res.baseJson(200, "Brand has been deleted succesfully", { deletedBrand });
     }
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 module.exports = router;

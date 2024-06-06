@@ -11,17 +11,9 @@ router.get("/", async (req, res) => {
   try {
     const products = await productService.getAllProducts();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "products found", products },
-    });
+    res.baseJson(200, "Products found", { products });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -31,17 +23,17 @@ router.post("/", isAdmin, async (req, res, next) => {
       req.body;
 
     if (!name) {
-      return res.status(400).json({ error: "Name is required" });
+      return res.baseJson(400, "Name is required");
     } else if (!description) {
-      return res.status(400).json({ error: "Description is required" });
+      return res.baseJson(400, "Description is required");
     } else if (!price) {
-      return res.status(400).json({ error: "Price is required" });
+      return res.baseJson(400, "Price is required");
     } else if (!quantity) {
-      return res.status(400).json({ error: "Quantity is required" });
+      return res.baseJson(400, "Quantity is required");
     } else if (!brand) {
-      return res.status(400).json({ error: "Brand Id number is required" });
+      return res.baseJson(400, "Brand Id number is required");
     } else if (!category) {
-      return res.status(400).json({ error: "Category Id number is required" });
+      return res.baseJson(400, "Category Id number is required");
     }
 
     const product = await productService.addProduct(
@@ -54,17 +46,9 @@ router.post("/", isAdmin, async (req, res, next) => {
       imgurl
     );
 
-    res.json({
-      status: "sucess",
-      statuscode: 200,
-      data: { result: "Product has been added", "product:": product },
-    });
+    res.baseJson(200, "Product has been added", { product });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -83,27 +67,19 @@ router.put("/:id", isAdmin, async (req, res, next) => {
       !categoryId &&
       !imgurl
     ) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: {
-          result:
-            "Field must be provided: name, description, price, quantity, brandId, categoryId or imgurl",
-        },
-      });
+      return res.baseJson(
+        400,
+        "At least one field must be provided: name, description, price, quantity, brandId, categoryId, or imgurl"
+      );
     }
 
     const existingProduct = await productService.getProductById(id);
 
     if (!existingProduct) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Product not found or been deleted" },
-      });
+      res.baseJson(404, "Product not found or been deleted");
     }
 
-    const updated = await productService.updateProduct(id, {
+    const updatedProduct = await productService.updateProduct(id, {
       name,
       description,
       price,
@@ -113,17 +89,9 @@ router.put("/:id", isAdmin, async (req, res, next) => {
       imgurl,
     });
 
-    return res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Product has been updated", product: updated },
-    });
+    res.baseJson(200, "Product has been updated", { updatedProduct });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -133,26 +101,14 @@ router.delete("/:id", isAdmin, async (req, res, next) => {
 
     const existingProduct = await productService.getProductById(id);
     if (!existingProduct) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Product not found" },
-      });
+      return res.baseJson(404, "Product not found or has been deleted");
     }
 
-    const deleted = await productService.deleteProduct(id);
+    const product = await productService.deleteProduct(id);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Product deleted successfully", "product:": deleted },
-    });
+    res.baseJson(200, "Product deleted successfully", { product });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

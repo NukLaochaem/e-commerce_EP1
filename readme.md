@@ -31,3 +31,7 @@ If you are unsure of any instructions for the course assignment, contact out to 
 - Any code or knowledge that has been sourced from internet forums, textbooks, AI-generated code, etc.
 
 Source: chatgpt, googling, w3schools
+
+An example of the configuration of your .env file
+Detailed instructions on how to run your application
+The version of NodeJS and any other plugins used for your application

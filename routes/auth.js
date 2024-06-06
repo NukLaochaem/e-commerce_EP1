@@ -31,31 +31,17 @@ router.post("/register", async (req, res, next) => {
       !address ||
       !telephonenumber
     ) {
-      return res.status(400).json({
-        status: "error",
-        statuscode: 400,
-        data: { result: "All fields are required" },
-      });
+      return res.baseJson(400, "All fields are required");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        status: "error",
-        statuscode: 400,
-        data: { result: error.message },
-      });
+      return res.baseJson(400, "Please enter a valid email address.");
     }
 
     const telephoneNumberRegex = /^\d{10}$/;
     if (!telephoneNumberRegex.test(telephonenumber)) {
-      return res.status(400).json({
-        status: "error",
-        statuscode: 400,
-        data: {
-          result: "Please provide a valid telephone Numbers",
-        },
-      });
+      return res.baseJson(400, "Please provide a valid telephone Numbers");
     }
 
     const existingUser = await userService.findUserByEmailOrUsername(
@@ -64,11 +50,7 @@ router.post("/register", async (req, res, next) => {
     );
 
     if (existingUser) {
-      return res.json({
-        status: "error",
-        statuscode: 400,
-        data: { result: "Email or Username already exists" },
-      });
+      return res.baseJson(400, "Email or Username already exists");
     }
 
     const newUser = await userService.createUser(
@@ -81,21 +63,9 @@ router.post("/register", async (req, res, next) => {
       telephonenumber
     );
 
-    return res.json({
-      status: "success",
-      statuscode: 201,
-      data: {
-        result: "You created an account.",
-      },
-    });
+    res.baseJson(201, "You created an account.");
   } catch (error) {
-    return res.json({
-      status: "error",
-      statuscode: 500,
-      data: {
-        result: error.message,
-      },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -104,11 +74,7 @@ router.post("/login", async (req, res, next) => {
     const { username = "", email = "", password } = req.body;
 
     if (!username && !email) {
-      return res.json({
-        status: "error",
-        satatuscode: 400,
-        data: { result: "Username or email is required" },
-      });
+      return res.baseJson(400, "Username or email is required");
     }
 
     const existingUser = await userService.findUser(
@@ -117,13 +83,7 @@ router.post("/login", async (req, res, next) => {
     );
 
     if (!existingUser) {
-      return res.json({
-        status: "error",
-        status: 401,
-        data: {
-          result: "Invalid username/email or password",
-        },
-      });
+      return res.baseJson(400, "Invalid username/email or password");
     }
 
     const token = jwt.sign(
@@ -138,25 +98,14 @@ router.post("/login", async (req, res, next) => {
       return res.redirect("/admin/products");
     }
 
-    res.json({
-      status: "success",
-      statuscde: 200,
-      data: {
-        result: "You are logged in",
-        id: existingUser.id,
-        email: existingUser.email,
-        name: existingUser.name,
-        token: token,
-      },
+    return res.baseJson(200, "You are logged in", {
+      id: existingUser.id,
+      email: existingUser.email,
+      name: existingUser.name,
+      token: token,
     });
   } catch (error) {
-    return res.json({
-      status: "error",
-      status: 500,
-      data: {
-        result: error.message,
-      },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -164,23 +113,30 @@ router.get("/users", isAdmin, async (req, res) => {
   try {
     const users = await userService.getAllUsers();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Users found", users },
-    });
+    res.baseJson(200, "Users found", { users });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
 router.put("/users", isAdmin, async (req, res) => {
   try {
     const { id, email, firstName, lastName, role } = req.body;
+
+    if (!id) {
+      return res.baseJson(400, "ID is required for updating a user");
+    }
+    if (!firstName && !lastName && !email && !role) {
+      return res.baseJson(
+        400,
+        "At least one of firstName, lastName, email, or role is required for updating a user"
+      );
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.baseJson(400, "Please enter a valid email address.");
+    }
 
     const user = await userService.updateUser(
       id,
@@ -189,18 +145,9 @@ router.put("/users", isAdmin, async (req, res) => {
       lastName,
       role
     );
-
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "user has been update", user },
-    });
+    res.baseJson(200, "User has been update", { user });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -208,17 +155,9 @@ router.get("/roles", isAdmin, async (req, res) => {
   try {
     const roles = await userService.getRoles();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "roles found", roles },
-    });
+    res.baseJson(200, "roles found", { roles });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

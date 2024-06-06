@@ -15,11 +15,7 @@ router.get("/products", isAdmin, async (req, res, next) => {
       products: products,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -34,11 +30,7 @@ router.get("/brands", isAdmin, async (req, res) => {
       brands: brands,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -53,11 +45,7 @@ router.get("/categories", isAdmin, async (req, res) => {
       categories: categories,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -69,7 +57,6 @@ router.get("/roles", isAdmin, async (req, res, next) => {
   });
 
   const roles = response.data.data.roles;
-  console.log(response.data.data);
 
   try {
     res.render("layout", {
@@ -78,11 +65,7 @@ router.get("/roles", isAdmin, async (req, res, next) => {
       roles: roles,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -102,11 +85,7 @@ router.get("/users", isAdmin, async (req, res, next) => {
       users: users,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -125,11 +104,7 @@ router.get("/orders", isAdmin, async (req, res, next) => {
       orders: orders,
     });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 500,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

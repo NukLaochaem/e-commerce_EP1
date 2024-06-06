@@ -11,17 +11,9 @@ router.get("/", isAuthorized, async (req, res) => {
   try {
     const cart = await cartService.getCart(req.user.id);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Cart found", cart },
-    });
+    res.baseJson(200, "Cart found", { cart });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -35,17 +27,9 @@ router.post("/", isAuthorized, async (req, res) => {
       quantity
     );
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Item has been added", cartItem },
-    });
+    res.baseJson(200, "Item has been added", { cartItem });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -53,17 +37,9 @@ router.post("/checkout/now", isAuthorized, async (req, res) => {
   try {
     const order = await cartService.checkoutCart(req.user.id);
 
-    res.json({
-      status: "success",
-      statuscode: 201,
-      data: { result: "checkout successfully", data: order },
-    });
+    res.baseJson(201, "checkout successfully", { order });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -77,17 +53,9 @@ router.put("/", isAuthorized, async (req, res) => {
       quantity
     );
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Cart has been updated", cartItem },
-    });
+    res.baseJson(200, "Cart has been updated", { cartItem });
   } catch (error) {
-    res.json({
-      status: "Error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -97,17 +65,9 @@ router.delete("/", isAuthorized, async (req, res) => {
 
     const cartItem = await cartService.removeCartItem(req.user.id, productId);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "cartItem has been removed", cartItem },
-    });
+    res.baseJson(200, "cartItem has been removed", { cartItem });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

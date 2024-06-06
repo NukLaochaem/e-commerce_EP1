@@ -13,17 +13,9 @@ router.get("/", async (req, res) => {
   try {
     const categories = await categoryService.getAllCategories();
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Category found", categories },
-    });
+    res.baseJson(200, "Category found", { categories });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -32,26 +24,13 @@ router.post("/", isAdmin, async (req, res) => {
     const { name } = req.body;
 
     if (!name) {
-      return res.json({
-        status: "error",
-        statuscode: 400,
-        data: { result: error.message },
-      });
+      return res.baseJson(400, "Category name required");
     }
-
     const category = await categoryService.createCategory(name);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "New category has been added", category },
-    });
+    res.baseJson(200, "New category has been added", { category });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -63,68 +42,37 @@ router.put("/:id", isAdmin, async (req, res) => {
     const existingCategory = await categoryService.getCategoryById(id);
 
     if (!existingCategory) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: error.message },
-      });
+      return res.baseJson(400, Category.message);
     }
     if (!name) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: "Category name required" },
-      });
+      return res.baseJson(404, "Category name required");
     }
 
     const updatedCategory = await categoryService.updateCategory(id, { name });
 
-    return res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "Category has been updated", updatedCategory },
-    });
+    res.baseJson(200, "Category has been updated", { updatedCategory });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
 router.delete("/:id", isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-
     const existingCategory = await categoryService.getCategoryById(id);
 
     if (!existingCategory) {
-      return res.json({
-        status: "error",
-        statuscode: 404,
-        data: { result: error.message },
-      });
+      return res.baseJson(400, Category.message);
     }
-
     const deletedCategory = await categoryService.deleteCategory(id);
 
     if (deletedCategory) {
-      res.json({
-        status: "success",
-        statuscode: 200,
-        data: {
-          result: "Category has been deleted succesfully",
-          deletedCategory,
-        },
+      res.baseJson(200, "Category has been deleted succesfully", {
+        deletedCategory,
       });
     }
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 

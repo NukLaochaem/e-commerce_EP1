@@ -5,12 +5,8 @@
     <input class="form-control me-3" type="text" placeholder="Product Names" id="searchProductName">
 
     <select id="searchBrandName" class="form-select mx-3">
-      <option value="" selected>Brands</option>
-
     </select>
     <select id="searchCategoryName" class="form-select mx-3">
-      <option value="" selected>Category</option>
-
     </select>
 
     <button type="submit" class="btn btn-primary px-3 mx-3 search-btn"><i class="bi bi-search"></i> Search </button>
@@ -246,7 +242,7 @@
 
       const defaultOption = document.createElement('option');
       defaultOption.value = '';
-      defaultOption.textContent = selectId.includes('Category') ? 'Category' : 'Brand';
+      defaultOption.textContent = selectId.includes('Categories') ? 'Categories' : 'Brands';
       selectElement.appendChild(defaultOption);
 
       options.forEach(option => {

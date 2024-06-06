@@ -7,8 +7,9 @@ var logger = require("morgan");
 var session = require("express-session");
 var SQLiteStore = require("connect-sqlite3")(session);
 
-var indexRouter = require("./routes/index");
+var baseResponse = require("./middleware/baseResponse");
 
+var indexRouter = require("./routes/index");
 var productsRouter = require("./routes/products");
 var categoriesRouter = require("./routes/categories");
 var brandsRouter = require("./routes/brands");
@@ -49,9 +50,9 @@ app.use(
     store: new SQLiteStore(),
   })
 );
+app.use(baseResponse);
 
 app.use("/", indexRouter);
-
 app.use("/products", productsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/brands", brandsRouter);

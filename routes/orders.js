@@ -12,17 +12,9 @@ router.get("/", isAuthorized, async (req, res, next) => {
     const isAdminUser = req.user.roleId === 1;
     const orders = await orderService.getOrders(req.user.id, isAdminUser);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "order found", orders },
-    });
+    res.baseJson(200, "order found", { orders });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 
@@ -31,17 +23,9 @@ router.put("/:id", isAdmin, async (req, res, next) => {
     const { status } = req.body;
     const order = await orderService.updateOrderStatus(req.params.id, status);
 
-    res.json({
-      status: "success",
-      statuscode: 200,
-      data: { result: "order updated", order },
-    });
+    res.baseJson(200, "order has been updated", { order });
   } catch (error) {
-    res.json({
-      status: "error",
-      statuscode: 400,
-      data: { result: error.message },
-    });
+    res.baseJson(500, error.message);
   }
 });
 module.exports = router;
