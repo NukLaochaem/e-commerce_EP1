@@ -11,6 +11,8 @@ var userService = new UserService(db);
 var { isAdmin } = require("../middleware/authMiddleware");
 
 router.post("/register", async (req, res, next) => {
+  // #swagger.description = "register new users, with unique username, password, as well as a unique email address"
+  /* #swagger.parameters['body'] =  { "name": "body","in": "body","schema": {$ref: "#/definitions/register"}}*/
   try {
     const {
       firstname,
@@ -70,6 +72,8 @@ router.post("/register", async (req, res, next) => {
 });
 
 router.post("/login", async (req, res, next) => {
+  // #swagger.description = "allow registerd users to login"
+  /* #swagger.parameters['body'] =  { "name": "body","in": "body","schema": {$ref: "#/definitions/login"}}*/
   try {
     const { username = "", email = "", password } = req.body;
 
@@ -110,6 +114,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.get("/users", isAdmin, async (req, res) => {
+  // #swagger.description = "Get all users"
   try {
     const users = await userService.getAllUsers();
 
@@ -120,6 +125,7 @@ router.get("/users", isAdmin, async (req, res) => {
 });
 
 router.put("/users", isAdmin, async (req, res) => {
+  // #swagger.description = "change or update users details"
   try {
     const { id, email, firstName, lastName, role } = req.body;
 
@@ -152,6 +158,7 @@ router.put("/users", isAdmin, async (req, res) => {
 });
 
 router.get("/roles", isAdmin, async (req, res) => {
+  // #swagger.description = "Get all the roles like User or admin"
   try {
     const roles = await userService.getRoles();
 

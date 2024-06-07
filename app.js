@@ -7,6 +7,10 @@ var logger = require("morgan");
 var session = require("express-session");
 var SQLiteStore = require("connect-sqlite3")(session);
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
+const bodyParser = require("body-parser");
+
 var baseResponse = require("./middleware/baseResponse");
 
 var indexRouter = require("./routes/index");
@@ -58,6 +62,9 @@ app.use("/orders", ordersRouter);
 app.use("/admin", adminRouter);
 app.use("/auth", authRouter);
 app.use("/membership", membershipRouter);
+
+app.use(bodyParser.json());
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

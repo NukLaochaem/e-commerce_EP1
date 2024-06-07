@@ -8,6 +8,7 @@ var brandService = new BrandService(db);
 const { isAdmin } = require("..//middleware/authMiddleware");
 
 router.get("/", async (req, res) => {
+  // #swagger.description = "Getting all the brands"
   try {
     const brands = await brandService.getAllBrand();
 
@@ -18,6 +19,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", isAdmin, async (req, res) => {
+  // #swagger.description = "adding new brand"
+  /* #swagger.parameters['body'] =  { "name": "body","in": "body","schema": {$ref: "#/definitions/brand"}}*/
   try {
     const { name } = req.body;
 
@@ -33,6 +36,7 @@ router.post("/", isAdmin, async (req, res) => {
 });
 
 router.put("/:id", isAdmin, async (req, res) => {
+  // #swagger.description = "editing/changing a brand"
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -54,6 +58,7 @@ router.put("/:id", isAdmin, async (req, res) => {
 });
 
 router.delete("/:id", isAdmin, async (req, res) => {
+  // #swagger.description = "delete/remove a brand"
   try {
     const { id } = req.params;
 

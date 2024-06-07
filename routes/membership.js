@@ -6,6 +6,7 @@ var db = require("../models");
 var membershipService = new MembershipService(db);
 
 router.get("/", async (req, res) => {
+  // #swagger.description = "Getting all the membership status"
   try {
     const membership = await membershipService.getAllMembership();
 

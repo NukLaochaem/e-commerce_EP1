@@ -8,6 +8,7 @@ var productService = new ProductService(db);
 const { isAdmin } = require("../middleware/authMiddleware");
 
 router.get("/", async (req, res) => {
+  // #swagger.description = "Get All products by using raw SQL queries"
   try {
     const products = await productService.getAllProducts();
 
@@ -18,6 +19,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", isAdmin, async (req, res, next) => {
+  // #swagger.description = "Create new product, all field are required"
+  /* #swagger.parameters['body'] =  { "name": "body","in": "body","schema": {$ref: "#/definitions/product"}}*/
   try {
     const { name, description, price, quantity, brand, category, imgurl } =
       req.body;
@@ -53,6 +56,7 @@ router.post("/", isAdmin, async (req, res, next) => {
 });
 
 router.put("/:id", isAdmin, async (req, res, next) => {
+  // #swagger.description = "Update the product with given Id"
   try {
     const { id } = req.params;
     const { name, description, price, quantity, brandId, categoryId, imgurl } =
@@ -96,6 +100,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
 });
 
 router.delete("/:id", isAdmin, async (req, res, next) => {
+  // #swagger.description = "Delete a product with the given Id"
   try {
     const { id } = req.params;
 

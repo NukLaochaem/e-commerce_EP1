@@ -5,6 +5,7 @@ var { isAdmin } = require("../middleware/authMiddleware");
 var axios = require("axios");
 
 router.get("/products", isAdmin, async (req, res, next) => {
+  // #swagger.description = "get products and render be display"
   try {
     const response = await axios.get("http://localhost:3000/products");
     const products = response.data.data.products;
@@ -20,6 +21,7 @@ router.get("/products", isAdmin, async (req, res, next) => {
 });
 
 router.get("/brands", isAdmin, async (req, res) => {
+  // #swagger.description = "Get brands and render be display"
   try {
     const response = await axios.get("http://localhost:3000/brands");
     const brands = response.data.data.brands;
@@ -35,6 +37,7 @@ router.get("/brands", isAdmin, async (req, res) => {
 });
 
 router.get("/categories", isAdmin, async (req, res) => {
+  // #swagger.description = "Get categories and render be display"
   const response = await axios.get("http://localhost:3000/categories");
   const categories = response.data.data.categories;
 
@@ -50,6 +53,7 @@ router.get("/categories", isAdmin, async (req, res) => {
 });
 
 router.get("/roles", isAdmin, async (req, res, next) => {
+  // #swagger.description = "Get roles and render to display"
   const response = await axios.get("http://localhost:3000/auth/roles", {
     headers: {
       Authorization: `Bearer ${req.cookies.token}`,
@@ -70,6 +74,7 @@ router.get("/roles", isAdmin, async (req, res, next) => {
 });
 
 router.get("/users", isAdmin, async (req, res, next) => {
+  // #swagger.description = "get users and render all to display"
   const response = await axios.get("http://localhost:3000/auth/users", {
     headers: {
       Authorization: `Bearer ${req.cookies.token}`,
@@ -90,6 +95,7 @@ router.get("/users", isAdmin, async (req, res, next) => {
 });
 
 router.get("/orders", isAdmin, async (req, res, next) => {
+  // #swagger.description = "get orders and render to display"
   const response = await axios.get("http://localhost:3000/orders", {
     headers: {
       Authorization: `Bearer ${req.cookies.token}`,

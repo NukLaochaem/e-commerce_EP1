@@ -10,6 +10,7 @@ const { isAdmin } = require("../middleware/authMiddleware");
 /* GET Categories page. */
 
 router.get("/", async (req, res) => {
+  // #swagger.description = "Getting all categories"
   try {
     const categories = await categoryService.getAllCategories();
 
@@ -20,6 +21,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", isAdmin, async (req, res) => {
+  // #swagger.description = "adding new categories"
+  /* #swagger.parameters['body'] =  { "name": "body","in": "body","schema": {$ref: "#/definitions/category"}}*/
   try {
     const { name } = req.body;
 
@@ -35,6 +38,7 @@ router.post("/", isAdmin, async (req, res) => {
 });
 
 router.put("/:id", isAdmin, async (req, res) => {
+  // #swagger.description = "editing/changing a category"
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -57,6 +61,7 @@ router.put("/:id", isAdmin, async (req, res) => {
 });
 
 router.delete("/:id", isAdmin, async (req, res) => {
+  // #swagger.description = "delete/remove a category"
   try {
     const { id } = req.params;
     const existingCategory = await categoryService.getCategoryById(id);
