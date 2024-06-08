@@ -6,21 +6,28 @@ This project is a back-end system for an existing e-commerce site that converts 
 
 ## Technologies Used
 
-- Node.js
-- Express.js: 4.19.2
-- MySQL: 2.18.1
-- Sequelize: 6.37.3
-- Bootstrap: 5.3.3
-- Axios: 1.6.8
+-Node.js
+-Express.js: 4.19.2
+-MySQL: 2.18.1
+-Sequelize: 6.37.3
+-Bootstrap: 5.3.3
+-Axios: 1.6.8
+-dotenv: 16.4.5
+-ejs: 3.1.10
 
 JWT for authentication
 
-- jsonwebtoken: 9.0.2
+-jsonwebtoken: 9.0.2
 
 Jest and Supertest for unit testing:
 
-- Jest: 29.7.0
-- Supertest: 7.0.0
+-Jest: 29.7.0
+-Supertest: 7.0.0
+
+Swagger for API documentation:
+
+-swagger-autogen: 2.23.7
+-swagger-ui-express: 5.0.1
 
 Swagger for API documentation:
 
