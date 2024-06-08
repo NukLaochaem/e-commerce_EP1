@@ -7,46 +7,63 @@ This project is a back-end system for an existing e-commerce site that converts 
 ## Technologies Used
 
 - Node.js
-- Express.js
-- MySQL
-- JWT for authentication
-- Swagger for API documentation
-- Jest and Supertest for unit testing
+- Express.js: 4.19.2
+- MySQL: 2.18.1
+- Sequelize: 6.37.3
+- Bootstrap: 5.3.3
+- Axios: 1.6.8
+
+JWT for authentication
+
+- jsonwebtoken: 9.0.2
+
+Jest and Supertest for unit testing:
+
+- Jest: 29.7.0
+- Supertest: 7.0.0
+
+Swagger for API documentation:
+
+- swagger-autogen: 2.23.7
+- swagger-ui-express: 5.0.1
 
 ## Setup Instructions
 
 1. Clone the repository
 
-   ```
-   git clone https://github.com/yourusername/ecommerce-backend.git
-   cd ecommerce-backend
-   ```
+```
+  git clone https://github.com/yourusername/ecommerce-backend.git
+  cd ecommerce-backend
+```
 
-### Install dependencies
+2. Install dependencies
 
 ```
 npm install
 ```
 
-Create a .env file in the root directory and add the following:
+3. Create a .env file in the root directory and add the following:
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=ecommerce
-JWT_SECRET=yourjwtsecret
+- DB_USER= "user"
+- DB_PASSWORD= "yourpassword"
+- DATABASE_NAME= "ExamProject"
+- DIALECT = "mysql"
+- DIALECTMODEL = "mysql2"
+- PORT = "3000"
+- HOST = "localhost"
+- JWT_SECRET= "yourjwtsecret"
 
-### Start the server:
+4. Start the server:
 
 ```
 npm start
 ```
 
-### API Endpoints / documented
+## API Endpoints / documented
 
 Access the documentation at http://localhost:3000/doc.
 
-### Testing:
+## Testing:
 
 ```
 npm test
@@ -56,20 +73,20 @@ npm test
 
 The Admin front-end interface is a separate application that interacts with this back-end system via the API endpoints. Ensure that the Admin interface uses the provided API endpoints for all data operations.
 
-### Admin Login Credentials:
+### Admin page Login Credentials:
 
 - Username: admin
 - Password: P@ssword2023
 
 ## REFERENCES
 
-\*\* Node.js Documentation
-\*\* Express.js Documentation
-\*\* MySQL Documentation
-\*\* Swagger Documentation
-\*\* Jest Documentation
-\*\* Supertest Documentation
-\*\* w3schools
+- Node.js Documentation
+- Express.js Documentation
+- MySQL Documentation
+- Swagger Documentation
+- Jest Documentation
+- Supertest Documentation
+- w3schools
 
 ## Acknowledgments
 
