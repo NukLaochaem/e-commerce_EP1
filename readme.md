@@ -1,37 +1,78 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/MMGe6Xp0)
-
-![](http://143.42.108.232/pvt/Noroff-64.png)
-
 # Noroff
 
-## Back-end Development Year 1
+## Overview, Back-end Development Year 1
 
-### EP - Course Assignment
+This project is a back-end system for an existing e-commerce site that converts static data into dynamic data using a back-end system. The project involves creating a MySQL database, developing API endpoints for CRUD operations, implementing user authentication and registration, and providing an admin interface. The project adheres to the 3rd Normal Form database design principles
 
-Startup code for Noroff back-end development 1 - EP course (e-commerce).
+## Technologies Used
 
-Instruction for the course assignment is in the LMS (Moodle) system of Noroff.
-[https://lms.noroff.no](https://lms.noroff.no)
+- Node.js
+- Express.js
+- MySQL
+- JWT for authentication
+- Swagger for API documentation
+- Jest and Supertest for unit testing
 
-![](http://143.42.108.232/pvt/important.png)
+## Setup Instructions
 
-You will not be able to make any submission after the deadline of the course assignment. Make sure to make all your commit **BEFORE** the deadline
+1. Clone the repository
 
-![](http://143.42.108.232/pvt/help_small.png)
+   ```
+   git clone https://github.com/yourusername/ecommerce-backend.git
+   cd ecommerce-backend
+   ```
 
-If you are unsure of any instructions for the course assignment, contact out to your teacher on **Microsoft Teams**.
+### Install dependencies
 
-**REMEMBER** Your Moodle LMS submission must have your repository link **AND** your Github username in the text file.
+```
+npm install
+```
 
----
+Create a .env file in the root directory and add the following:
 
-\*\*REFERENCES
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_NAME=ecommerce
+JWT_SECRET=yourjwtsecret
 
-- Acknowledgments of any help received from other students (If the student is working in a mentor group)
-- Any code or knowledge that has been sourced from internet forums, textbooks, AI-generated code, etc.
+### Start the server:
 
-Source: chatgpt, googling, w3schools
+```
+npm start
+```
 
-An example of the configuration of your .env file
-Detailed instructions on how to run your application
-The version of NodeJS and any other plugins used for your application
+### API Endpoints / documented
+
+Access the documentation at http://localhost:3000/doc.
+
+### Testing:
+
+```
+npm test
+```
+
+## Admin Front-End Interface
+
+The Admin front-end interface is a separate application that interacts with this back-end system via the API endpoints. Ensure that the Admin interface uses the provided API endpoints for all data operations.
+
+### Admin Login Credentials:
+
+- Username: admin
+- Password: P@ssword2023
+
+## REFERENCES
+
+\*\* Node.js Documentation
+\*\* Express.js Documentation
+\*\* MySQL Documentation
+\*\* Swagger Documentation
+\*\* Jest Documentation
+\*\* Supertest Documentation
+\*\* w3schools
+
+## Acknowledgments
+
+- AI assistance from ChatGPT for code review and suggestions
+- Code snippets and solutions sourced from Stack Overflow, GitHub, and various programming forums.
+
