@@ -6,7 +6,7 @@ This project is a back-end system for an existing e-commerce site that converts 
 
 ## Technologies Used
 
-- Node.js
+- Node.js: 18.16.0
 - Express.js: 4.19.2
 - MySQL: 2.18.1
 - Sequelize: 6.37.3
