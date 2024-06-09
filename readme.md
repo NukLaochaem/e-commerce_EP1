@@ -1,6 +1,6 @@
-# Noroff
+# Noroff | Back-end Development Exam Project
 
-## Overview, Back-end Development Exam Project
+## Overview
 
 This project is a back-end system for an existing e-commerce site that converts static data into dynamic data using a back-end system. The project involves creating a MySQL database, developing API endpoints for CRUD operations, implementing user authentication and registration, and providing an admin interface. The project adheres to the 3rd Normal Form database design principles
 
@@ -23,11 +23,6 @@ Jest and Supertest for unit testing:
 
 - Jest: 29.7.0
 - Supertest: 7.0.0
-
-Swagger for API documentation:
-
-- swagger-autogen: 2.23.7
-- swagger-ui-express: 5.0.1
 
 Swagger for API documentation:
 
@@ -68,13 +63,13 @@ npm start
 
 The application will start, and you can access it through your web browser at http://localhost:3000
 
-## Testing:
+### Testing:
 
 ```
 npm test
 ```
 
-## API Endpoints / documented
+### API Endpoints / documented
 
 Access the documentation at http://localhost:3000/doc.
 

@@ -87,15 +87,12 @@ class CartService {
       totalAmount += item.unitPrice * item.quantity;
     }
 
-    // Update user's membership before applying discount
     await this.updateUserMembership(userId);
 
-    // Re-fetch user to get updated membership
     const updatedUser = await this.User.findByPk(userId, {
       include: [this.Membership],
     });
 
-    // Calculate discount if the user has a membership
     const discount = updatedUser.Membership
       ? updatedUser.Membership.discount
       : 0;
@@ -107,7 +104,6 @@ class CartService {
     };
     const orderNumber = generateOrderNumber();
 
-    // Create a new order with the total amount and discount
     const order = await this.Order.create({
       userId,
       totalAmount: discountedTotalAmount,
@@ -117,7 +113,6 @@ class CartService {
       orderNumber,
     });
 
-    // Create order items for each cart item
     await Promise.all(
       cart.CartItems.map((item) =>
         this.OrderItem.create({
@@ -129,10 +124,8 @@ class CartService {
       )
     );
 
-    // Update the cart status to 'completed'
     await this.Cart.update({ status: "completed" }, { where: { id: cart.id } });
 
-    // Update the user's purchase count and save
     updatedUser.purchaseCount += cart.CartItems.reduce(
       (sum, item) => sum + item.quantity,
       0

@@ -19,14 +19,14 @@ const doc = {
     register: {
       $firstname: "register",
       $lastname: "swagger",
-      $username: "swagger test",
+      $username: "swagger",
       $email: "swagger@hotmail.com",
       $password: "password123",
       $address: "swagger",
       $telephonenumber: "1234567890",
     },
     login: {
-      $username: "swagger test",
+      $username: "swagger",
       $password: "password123",
     },
     brand: {
