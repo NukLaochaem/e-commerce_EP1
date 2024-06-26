@@ -46,14 +46,14 @@ npm install
 
 3. Create a .env file in the root directory and add the following:
 
-- DB_USER= "user"
-- DB_PASSWORD= "yourpassword"
+- ADMIN_USERNAME= "user"
+- ADMIN_PASSWORD= "yourpassword"
 - DATABASE_NAME= "ExamProject"
 - DIALECT = "mysql"
 - DIALECTMODEL = "mysql2"
 - PORT = "3000"
 - HOST = "localhost"
-- JWT_SECRET= "yourjwtsecret"
+- TOKEN_SECRET= "yourjwtsecret"
 
 4. Start the server:
 

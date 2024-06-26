@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
     password: Sequelize.DataTypes.STRING,
     salt: Sequelize.DataTypes.STRING,
     address: Sequelize.DataTypes.STRING,
-    telephoneNumber: Sequelize.DataTypes.STRING,
+    telephoneNumber: Sequelize.DataTypes.INTEGER,
     purchaseCount: Sequelize.DataTypes.INTEGER,
   });
   User.associate = (models) => {

@@ -23,7 +23,7 @@ const doc = {
       $email: "swagger@hotmail.com",
       $password: "password123",
       $address: "swagger",
-      $telephonenumber: "1234567890",
+      $telephonenumber: 1234567890,
     },
     login: {
       $username: "swagger",

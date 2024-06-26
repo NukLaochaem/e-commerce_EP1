@@ -748,8 +748,8 @@
           "example": "swagger"
         },
         "telephonenumber": {
-          "type": "string",
-          "example": "1234567890"
+          "type": "number",
+          "example": 1234567890
         }
       },
       "required": [
