@@ -1,0 +1,146 @@
+<div class="container">
+  <h2>Users</h2>
+
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Telephone</th>
+        <th>Roles</th>
+        <th>Membership</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user=> { %>
+        <tr>
+          <td>
+            <%= user.id %>
+          </td>
+          <td>
+            <%= user.userName %>
+          </td>
+          <td>
+            <%= user.firstName %>
+          </td>
+          <td>
+            <%= user.lastName %>
+          </td>
+          <td>
+            <%= user.email %>
+          </td>
+          <td>
+            <%= user.address %>
+          </td>
+          <td>
+            <%= user.telephoneNumber %>
+          </td>
+          <td>
+            <%= user.RoleId %>
+          </td>
+          <td>
+            <mark>
+              <%= user.Membership ? user.Membership.name : 'No Membership' %>
+            </mark>
+          </td>
+          <td>
+            <button type="button" data-bs-toggle="modal" class="btn btn-warning btn-sm edit-button"
+              data-id="<%= user.id %>" data-email="<%= user.email %>" data-firstname="<%= user.firstName %>"
+              data-lastname="<%= user.lastName %>" data-role="<%= user.RoleId %>" data-bs-target="#exampleModal">
+              Edit
+            </button>
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit user details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form id="editUserForm">
+          <div class="form-group mb-2">
+            <label for="editUserId">Id</label>
+            <input type="text" id="editUserId" class="form-control" disabled>
+          </div>
+          <div class="form-group my-3">
+            <label for="editUserEmail">Email</label>
+            <input type="email" id="editUserEmail" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="editUserFirstName">First Name</label>
+            <input type="text" id="editUserFirstName" class="form-control">
+          </div>
+          <div class="form-group my-3">
+            <label for="editUserLastName">Last Name</label>
+            <input type="text" id="editUserLastName" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label for="editUserRole">Role</label>
+            <select id="editUserRole" class="form-select">
+              <option value="1">Admin</option>
+              <option value="2">User</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChangesButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.querySelectorAll('.edit-button').forEach(button => {
+    button.addEventListener('click', function () {
+      document.getElementById('editUserId').value = this.getAttribute('data-id');
+      document.getElementById('editUserEmail').value = this.getAttribute('data-email');
+      document.getElementById('editUserFirstName').value = this.getAttribute('data-firstname');
+      document.getElementById('editUserLastName').value = this.getAttribute('data-lastname');
+      document.getElementById('editUserRole').value = this.getAttribute('data-role');
+    });
+  });
+
+  document.getElementById('saveChangesButton').addEventListener('click', function () {
+    const id = document.getElementById('editUserId').value;
+    const email = document.getElementById('editUserEmail').value;
+    const firstName = document.getElementById('editUserFirstName').value;
+    const lastName = document.getElementById('editUserLastName').value;
+    const roleId = document.getElementById('editUserRole').value;
+
+    fetch('http://localhost:3000/auth/users', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id, email, firstName, lastName, role: roleId })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+
+  });
+</script>

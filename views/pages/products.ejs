@@ -1,0 +1,489 @@
+<div class="container">
+  <h2>All Products </h2>
+
+  <div class="input-group my-3">
+    <input class="form-control me-3" type="text" placeholder="Product Names" id="searchProductName">
+
+    <select id="searchBrandName" class="form-select mx-3">
+    </select>
+    <select id="searchCategoryName" class="form-select mx-3">
+    </select>
+
+    <button type="submit" class="btn btn-primary px-3 mx-3 search-btn"><i class="bi bi-search"></i> Search </button>
+    <button type="button" class="btn btn-warning px-3 mx-3 clear-btn"><i class="bi bi-x-lg"></i></i> Clear </button>
+    <button type="submit" class="btn btn-success ms-4 add-btn" data-bs-toggle="modal"
+      data-bs-target="#addProductModal"><i class="bi bi-plus-lg"></i>Add</button>
+  </div>
+
+  <table class="table table-bordered mt-3 " id="productsTable">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Brand</th>
+        <th>Category</th>
+        <th>Image URL</th>
+        <th>image</th>
+        <th>Is Deleted</th>
+        <th>Date Added</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody id="productsTableBody">
+      <% products.forEach(product=> { %>
+        <tr>
+          <td>
+            <%= product.id %>
+          </td>
+          <td>
+            <%= product.name %>
+          </td>
+          <td>
+            <%= product.description %>
+          </td>
+          <td>
+            <%= product.quantity %>
+          </td>
+          <td>
+            <%= product.price %>
+          </td>
+          <td>
+            <%= product.brand %>
+          </td>
+          <td>
+            <%= product.category %>
+          </td>
+          <td class="imgurl">
+            <%= product.imgurl %>
+          </td>
+          <td><img src="<%= product.imgurl %>" alt="Product image" width="50"></td>
+          <td><mark>
+              <%= product.deletedAt ? 'Yes' : 'No' %>
+            </mark></td>
+          <td>
+            <%= product.date_added %>
+          </td>
+          <td>
+            <button class="btn btn-warning btn-sm edit-product-button" data-id="<%= product.id %>"
+              data-name="<%= product.name %>" data-description="<%= product.description %>"
+              data-quantity="<%= product.quantity %>" data-price="<%= product.price %>" data-url="<%= product.imgurl %>"
+              data-brand-id="<%= product.BrandId %>" data-category-id="<%= product.CategoryId %>"
+              data-deleted="<%= product.deletedAt %>" data-bs-toggle="modal"
+              data-bs-target="#editProductModal">Edit</button>
+            <button class="btn btn-danger btn-sm delete-product-button" data-id="<%= product.id %>">Delete</button>
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+
+
+  <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalLabel">Edit Product Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <form id="productForm">
+            <div class="form-group mb-2">
+              <label for="productId">Id</label>
+              <input type="text" id="productId" class="form-control" disabled>
+            </div>
+            <div class="form-group my-3">
+              <label for="productName">Name</label>
+              <input type="text" id="productName" class="form-control">
+            </div>
+            <div class="form-group my-3">
+              <label for="productBrand">Brand</label>
+              <select id="productBrand" class="form-select">
+
+              </select>
+            </div>
+            <div class="form-group my-3">
+              <label for="productCategory">Category</label>
+              <select id="productCategory" class="form-select">
+
+              </select>
+            </div>
+            <div class="form-group my-3">
+              <label for="productDescription">Description</label>
+              <textarea id="productDescription" class="form-control"></textarea>
+            </div>
+            <div class="form-group my-3">
+              <label for="productQuantity">Quantity</label>
+              <input type="number" id="productQuantity" class="form-control">
+            </div>
+            <div class="form-group my-3">
+              <label for="productPrice">Price</label>
+              <input type="text" id="productPrice" class="form-control">
+            </div>
+
+            <div class="form-group my-3">
+              <label for="productUrl">Image URL</label>
+              <input type="text" id="productUrl" class="form-control">
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="productDeleted">Is Deleted</label>
+              <input type="text" id="productDeleted" class="form-control" disabled>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveProductChangesButton">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalLabel">Add Product Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="productForm">
+
+            <div class="form-group mb-2">
+              <label for="addProductId">Id</label>
+              <input type="text" id="addProductId" class="form-control" disabled>
+            </div>
+
+            <div class="form-group my-3">
+              <label for="addproductName">Product Name</label>
+              <input type="text" id="addproductName" class="form-control" required>
+              <small id="addproductNameError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addBrand">Brand</label>
+              <select id="addBrand" class="form-select"></select>
+              <small id="addBrandError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addCategory">Category</label>
+              <select id="addCategory" class="form-select"></select>
+              <small id="addCategoryError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addDescription">Description</label>
+              <textarea id="addDescription" class="form-control" required></textarea>
+              <small id="addDescriptionError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addImageUrl">Image URL</label>
+              <input type="text" id="addImageUrl" class="form-control" required>
+              <small id="addImageUrlError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addQuantity">Quantity</label>
+              <input type="number" id="addQuantity" class="form-control" required>
+              <small id="addQuantityError" class="text-danger"></small>
+            </div>
+            <div class="form-group my-3">
+              <label for="addPrice">Price</label>
+              <input type="number" id="addPrice" class="form-control" required>
+              <small id="addPriceError" class="text-danger"></small>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="productDeleted">Is Deleted</label>
+              <input type="text" id="productDeleted" class="form-control" disabled>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="saveAddProduct">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function fetchAndPopulateBrand() {
+      fetch('http://localhost:3000/brands')
+        .then(response => response.json())
+        .then(data => {
+          populateSelect('productBrand', data.data.brands);
+          populateSelect('searchBrandName', data.data.brands);
+          populateSelect('addBrand', data.data.brands);
+        })
+        .catch(error => console.error('Error fetching brand data:', error));
+    }
+
+    function fetchAndPopulateCategory() {
+      fetch('http://localhost:3000/categories') // Replace URL with your actual endpoint
+        .then(response => response.json())
+        .then(data => {
+          populateSelect('productCategory', data.data.categories); // For edit modal
+          populateSelect('searchCategoryName', data.data.categories); // For search
+          populateSelect('addCategory', data.data.categories); // For add modal
+        })
+        .catch(error => console.error('Error fetching category data:', error));
+    }
+
+    function populateSelect(selectId, options) {
+      const selectElement = document.getElementById(selectId);
+
+      selectElement.innerHTML = '';
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = selectId.includes('Categories') ? 'Categories' : 'Brands';
+      selectElement.appendChild(defaultOption);
+
+      options.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.id;
+        optionElement.textContent = option.name;
+        selectElement.appendChild(optionElement);
+      });
+    }
+
+    function searchTable(products) {
+      const tableBody = document.getElementById('productsTableBody');
+      tableBody.innerHTML = '';
+
+      if (products.length === 0) {
+        const noResultsRow = document.createElement('tr');
+        noResultsRow.innerHTML = '<td colspan="12">No results found.</td>';
+        tableBody.appendChild(noResultsRow);
+
+      } else {
+        products.forEach(product => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+          <td>${product.id}</td>
+          <td>${product.name}</td>
+          <td>${product.description}</td>
+          <td>${product.quantity}</td>
+          <td>${product.price}</td>
+          <td>${product.brandName}</td>
+          <td>${product.categoryName}</td>
+          <td class="imgurl">${product.imgurl}</td>
+          <td><img src="${product.imgurl}" alt="Product image" width="50"></td>
+          <td><mark>${product.deletedAt ? 'Yes' : 'No'}</mark></td>
+          <td>${product.date_added}</td>
+          <td>
+          </td>`;
+          tableBody.appendChild(row);
+        });
+      }
+    }
+
+    window.addEventListener('load', () => {
+      fetchAndPopulateBrand();
+      fetchAndPopulateCategory();
+    });
+
+    document.querySelector('.clear-btn').addEventListener("click", function () {
+      location.reload();
+    });
+    /*
+    <button class="btn btn-warning btn-sm edit-product-button" data-id="${product.id}" data-name="${product.name}" data-description="${product.description}" data-quantity="${product.quantity}" data-price="${product.price}" 
+            data-url="${product.imgurl}" data-brand-id="${product.BrandId}" data-category-id="${product.CategoryId}" data-deleted="${product.deletedAt}"  data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
+
+            <button class="btn btn-danger btn-sm delete-product-button" data-id="${product.id}">Delete</button>*/
+
+
+    document.querySelector('.search-btn').addEventListener('click', function () {
+      const productName = document.getElementById('searchProductName').value;
+      const categorySelect = document.getElementById('searchCategoryName');
+      const brandSelect = document.getElementById('searchBrandName');
+
+      const categoryName = categorySelect.selectedIndex > 0 ? categorySelect.options[categorySelect.selectedIndex].text : '';
+      const brandName = brandSelect.selectedIndex > 0 ? brandSelect.options[brandSelect.selectedIndex].text : '';
+
+      console.log(productName, categoryName, brandName);
+
+
+      fetch('http://localhost:3000/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ productName, categoryName, brandName })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            searchTable(data.data.products);
+          } else {
+            alert('Error: ' + data.data.result);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('saveAddProduct').addEventListener("click", function () {
+      const name = document.getElementById('addproductName').value.trim();
+      const brand = document.getElementById('addBrand').value.trim();
+      const category = document.getElementById('addCategory').value.trim();
+      const description = document.getElementById('addDescription').value.trim();
+      const quantity = document.getElementById('addQuantity').value.trim();
+      const imgurl = document.getElementById('addImageUrl').value.trim();
+      const price = document.getElementById('addPrice').value.trim();
+
+      let valid = true;
+
+      if (!name) {
+        valid = false;
+        document.getElementById('addproductNameError').textContent = 'Name is required';
+      } else {
+        document.getElementById('addproductNameError').textContent = '';
+      }
+
+      if (!brand) {
+        valid = false;
+        document.getElementById('addBrandError').textContent = 'Brand is required';
+      } else {
+        document.getElementById('addBrandError').textContent = '';
+      }
+
+      if (!category) {
+        valid = false;
+        document.getElementById('addCategoryError').textContent = 'Category is required';
+      } else {
+        document.getElementById('addCategoryError').textContent = '';
+      }
+
+      if (!description) {
+        valid = false;
+        document.getElementById('addDescriptionError').textContent = 'Description is required';
+      } else {
+        document.getElementById('addDescriptionError').textContent = '';
+      }
+
+      if (!quantity) {
+        valid = false;
+        document.getElementById('addQuantityError').textContent = 'Quantity is required';
+      } else {
+        document.getElementById('addQuantityError').textContent = '';
+      }
+
+      if (!imgurl) {
+        valid = false;
+        document.getElementById('addImageUrlError').textContent = 'Image URL is required';
+      } else {
+        document.getElementById('addImageUrlError').textContent = '';
+      }
+
+      if (!price) {
+        valid = false;
+        document.getElementById('addPriceError').textContent = 'Price is required';
+      } else {
+        document.getElementById('addPriceError').textContent = '';
+      }
+
+      if (!valid) {
+        return;
+      }
+
+      fetch('http://localhost:3000/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, brand, category, description, quantity, price, imgurl })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            window.location.reload();
+          } else {
+            alert(data.data.result);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+
+    document.querySelectorAll('.edit-product-button').forEach(button => {
+      button.addEventListener('click', function (event) {
+        const button = event.target;
+        document.getElementById('productId').value = button.getAttribute('data-id');
+        document.getElementById('productName').value = button.getAttribute('data-name');
+        document.getElementById('productDescription').value = button.getAttribute('data-description');
+        document.getElementById('productQuantity').value = button.getAttribute('data-quantity');
+        document.getElementById('productPrice').value = button.getAttribute('data-price');
+        document.getElementById('productUrl').value = button.getAttribute('data-url');
+        document.getElementById('productDeleted').value = button.getAttribute('data-deleted') === 'true' ? 'Yes' : 'No';
+
+        const brandId = button.getAttribute('data-brand-id');
+        const categoryId = button.getAttribute('data-category-id');
+
+        const brandSelect = document.getElementById('productBrand');
+        brandSelect.value = brandId;
+
+        const categorySelect = document.getElementById('productCategory');
+        categorySelect.value = categoryId;
+      });
+    });
+
+    document.querySelectorAll('.delete-product-button').forEach(button => {
+      button.addEventListener('click', function (event) {
+        const productId = event.target.getAttribute('data-id');
+
+        if (confirm('Are you sure you want to delete this product?')) {
+          fetch(`http://localhost:3000/products/${productId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                window.location.reload()
+              } else {
+                alert('Error: ' + data.data.result);
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      });
+    });
+
+    document.getElementById('saveProductChangesButton').addEventListener('click', function () {
+      const id = document.getElementById('productId').value.trim();
+      const name = document.getElementById('productName').value.trim();
+      const description = document.getElementById('productDescription').value.trim();
+      const quantity = document.getElementById('productQuantity').value.trim();
+      const price = document.getElementById('productPrice').value.trim();
+      const brandId = document.getElementById('productBrand').value.trim();
+      const imgurl = document.getElementById('productUrl').value.trim();
+      const categoryId = document.getElementById('productCategory').value.trim();
+
+
+      fetch(`http://localhost:3000/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, description, quantity, price, brandId, categoryId, imgurl })
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            window.location.reload();
+          } else {
+            alert(data.data.result);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+
+    });
+  </script>

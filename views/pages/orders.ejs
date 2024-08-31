@@ -1,0 +1,114 @@
+<div class="container">
+  <h2>Orders</h2>
+
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Order Number</th>
+        <th>Create</th>
+        <th>Update</th>
+        <th>User Id</th>
+        <th>Order status</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% orders.forEach(order=> { %>
+        <tr>
+          <td>
+            <%= order.id %>
+          </td>
+          <td>
+            <%= order.orderNumber %>
+          </td>
+          <td>
+            <%= order.createdAt %>
+          </td>
+          <td>
+            <%= order.updatedAt %>
+          </td>
+          <td>
+            <%= order.userId %>
+          </td>
+          <td>
+            <mark>
+              <%= order.status %>
+            </mark>
+          </td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm edit-order-button" data-bs-toggle="modal"
+              data-bs-target="#editOrderModal" data-id="<%= order.id %>" data-status="<%= order.status %>">Edit</button>
+          </td>
+        </tr>
+
+        <% }); %>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editOrderModalLabel">Edit Order Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editOrderForm">
+          <div class="form-group mb-2">
+            <label for="editOrderId">Order ID</label>
+            <input type="text" id="editOrderId" class="form-control" disabled>
+          </div>
+          <div class="form-group mb-2">
+            <label for="editOrderStatus">Status</label>
+            <select id="editOrderStatus" class="form-select">
+              <option value="In Progress">In Progress</option>
+              <option value="Ordered">Ordered</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveOrderChangesButton">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  document.querySelectorAll('.edit-order-button').forEach(button => {
+    button.addEventListener('click', function () {
+      document.getElementById('editOrderId').value = this.getAttribute('data-id');
+      document.getElementById('editOrderStatus').value = this.getAttribute('data-status');
+    });
+  });
+
+  document.getElementById('saveOrderChangesButton').addEventListener('click', function () {
+    const id = document.getElementById('editOrderId').value;
+    const status = document.getElementById('editOrderStatus').value;
+
+    fetch(`http://localhost:3000/orders/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.data.result);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  });
+</script>

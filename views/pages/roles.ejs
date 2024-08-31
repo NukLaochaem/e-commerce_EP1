@@ -1,0 +1,24 @@
+<div class="container">
+  <h2>Roles</h2>
+
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Id role</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% roles.forEach(role=> { %>
+        <tr>
+          <td>
+            <%= role.id %>
+          </td>
+          <td>
+            <%= role.name %>
+          </td>
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+</div>
